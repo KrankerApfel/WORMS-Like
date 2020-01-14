@@ -23,8 +23,8 @@ class Game:
         self.playing = False
 
     def new(self):
+        ## load games parameters and assets here
         self.run()
-        pass
 
     def run(self):
         # main loop
@@ -49,7 +49,6 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
-        pass
 
     def draw(self):
         # display loop
@@ -77,7 +76,6 @@ class Game:
 
         pg.display.flip()
         self.press_key()
-        self.new()
 
     def draw_text(self, text, size, color, x, y, font_name):
         font = pg.font.Font(font_name, size)
