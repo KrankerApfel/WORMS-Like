@@ -1,0 +1,45 @@
+{
+   "School":"Ecole Supérieur de Génie Informatique",
+   "Developpers":{
+      "0":{
+         "forname":"Antoine",
+         "lastname":"PAVY"
+      },
+      "1":{
+         "forname":"Tom",
+         "lastname":"RAKOTOMANAMPISON"
+      },
+      "2":{
+         "forname":"Lior",
+         "lastname":"DILER"
+      }
+   },
+   "Musics":{
+      "Action theme 1":{
+         "name":"Valor Spirit",
+         "artist":"Kranker Apfel"
+      },
+      "Action theme 2":{
+         "name":"LNA",
+         "artist":"Kranker Apfel"
+      },
+      "Action theme 3":{
+         "name":"Suicid Smart",
+         "artist":"Kranker Apfel"
+      },
+      "Menu theme":{
+         "name":"Military Organization Logistic Expert",
+         "artist":"Kranker Apfel"
+      }
+   },
+   "Graphics":{
+      "0":{
+         "forname":"Antoine",
+         "lastname":"PAVY"
+      },
+      "1":{
+         "forname":"Tom",
+         "lastname":"RAKOTOMANAMPISON"
+      }
+   }
+}
