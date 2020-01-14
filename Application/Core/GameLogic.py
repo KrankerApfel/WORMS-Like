@@ -23,6 +23,7 @@ class Game:
         self.playing = False
 
     def new(self):
+        self.run()
         pass
 
     def run(self):
@@ -52,6 +53,7 @@ class Game:
 
     def draw(self):
         # display loop
+        self.screen.fill((50,255,1))
         pg.display.flip()
 
     def show_splashscreen(self):
@@ -66,7 +68,7 @@ class Game:
                        self.Settings.instance.SCREEN_WIDTH / 4,
                        self.Settings.instance.FONT_TITLE)
 
-        self.draw_text("Presse enter",
+        self.draw_text("Presse start",
                        18,
                        (255, 255, 255),
                        self.Settings.instance.SCREEN_WIDTH / 2,
@@ -74,6 +76,8 @@ class Game:
                        self.Settings.instance.FONT_TEXT)
 
         pg.display.flip()
+        self.press_key()
+        self.new()
 
     def draw_text(self, text, size, color, x, y, font_name):
         font = pg.font.Font(font_name, size)
@@ -87,6 +91,17 @@ class Game:
         self.screen.blit(image, (x, y))
         pg.time.delay(delay)
         pg.display.flip()
+
+    def press_key(self):
+        # Continue apres avoir presser une touche
+        waiting = True
+        while waiting:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.running = False
+                if event.type == pg.KEYUP:
+                    waiting = False
 
     def quit(self):
         self.playing = False
