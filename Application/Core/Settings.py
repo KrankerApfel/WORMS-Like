@@ -1,10 +1,8 @@
-import os
+from Application.Core.Utilities import path_asset
 import pygame as pg
 
 
-# --- OS compatibility function ---
-def path_asset(path):
-    return os.path.join('Assets', path)
+
 
 
 class Settings:
