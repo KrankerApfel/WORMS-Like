@@ -23,6 +23,8 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.on_menu = True
+        self.on_game = False
+        self.on_game_over = False
         self.playing = False
         self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
 
@@ -66,8 +68,15 @@ class Game:
             self.screen.fill((50, 255, 1))
         pg.display.flip()
 
-    def show_splashscreen(self):
-        pass
+    def splash_screen(self):
+        fadeout_img(pg.image.load(path_asset("Graphics/ESGI_logo.jpeg")),
+                    self.Settings.instance.SCREEN_WIDTH / 3.5,
+                    self.Settings.instance.SCREEN_HEIGHT / 2,
+                    600,
+                    (0, 0, 0),
+                    self.screen
+                    )
+        pg.time.delay(2400)
 
     def quit(self):
         self.on_menu = False

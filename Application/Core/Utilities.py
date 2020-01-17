@@ -1,4 +1,10 @@
 import pygame as pg
+import os
+
+
+# --- OS compatibility function ---
+def path_asset(path):
+    return os.path.join('Assets', path)
 
 
 def draw_text(text, size, color, x, y, font_name, screen):

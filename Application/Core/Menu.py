@@ -15,23 +15,35 @@ class Menu:
         self.app = app
         self._party_data = {'players_list': [],
                            'worms_number': 0}
+        self.credits = "(c) ESGI 2020  -  Developpers : Lior DILER, Tom RAKOTOMANAMPISON, Antoine PAVY | "\
+                       "Graphic artist : Antoine PAVY  | " \
+                       'Musics : Tom RAKOTOMANAMPISON  | '
 
     def draw(self):
         self.screen.fill(self.background_color)
         draw_text(self.Settings.instance.TITLE_GAME,
-                  40,
-                  (255, 255, 255),
+                  100,
+                  (231,156,73),
                   self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_WIDTH / 4,
+                  self.Settings.instance.SCREEN_HEIGHT / 4,
                   self.Settings.instance.FONT_TITLE,
                   self.screen
                   )
 
         draw_text("Press start",
-                  18,
-                  (255, 255, 255),
+                  50,
+                  (231,156,73),
                   self.Settings.instance.SCREEN_WIDTH / 2,
+                  self.Settings.instance.SCREEN_HEIGHT/2,
+                  self.Settings.instance.FONT_TEXT,
+                  self.screen
+                  )
+
+        draw_text(self.credits,
+                  25,
+                  (0, 0, 0),
                   self.Settings.instance.SCREEN_WIDTH / 2,
+                  self.Settings.instance.SCREEN_HEIGHT /1.1,
                   self.Settings.instance.FONT_TEXT,
                   self.screen
                   )
