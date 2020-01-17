@@ -1,4 +1,5 @@
 from Application.Core.Settings import *
+from Application.Core.Utilities import draw_text, fadeout_img, press_key
 import pygame as pg
 
 
@@ -61,47 +62,29 @@ class Game:
 
     def menu(self):
         self.screen.fill((5,5,30))
-        self.draw_text(self.Settings.instance.TITLE_GAME,
+        draw_text(self.Settings.instance.TITLE_GAME,
                        40,
                        (255,255,255),
                        self.Settings.instance.SCREEN_WIDTH / 2,
                        self.Settings.instance.SCREEN_WIDTH / 4,
-                       self.Settings.instance.FONT_TITLE)
+                       self.Settings.instance.FONT_TITLE,
+                       self.screen
+                  )
 
-        self.draw_text("Presse start",
+        draw_text("Presse start",
                        18,
                        (255, 255, 255),
                        self.Settings.instance.SCREEN_WIDTH / 2,
                        self.Settings.instance.SCREEN_WIDTH / 2,
-                       self.Settings.instance.FONT_TEXT)
+                       self.Settings.instance.FONT_TEXT,
+                       self.screen
+                  )
 
         pg.display.flip()
-        self.press_key()
+        press_key(self)
         self.new()
 
-    def draw_text(self, text, size, color, x, y, font_name):
-        font = pg.font.Font(font_name, size)
-        text_surface = font.render(text, True, color)
-        text_rect = text_surface.get_rect()
-        text_rect.midtop = (x, y)
-        self.screen.blit(text_surface, text_rect)
 
-    def fadeout_img(self, image, x, y, delay, background):
-        self.screen.fill(background)
-        self.screen.blit(image, (x, y))
-        pg.time.delay(delay)
-        pg.display.flip()
-
-    def press_key(self):
-        # Continue apres avoir presser une touche
-        waiting = True
-        while waiting:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    waiting = False
-                    self.running = False
-                if event.type == pg.KEYUP:
-                    waiting = False
 
     def quit(self):
         self.playing = False
