@@ -23,7 +23,6 @@ def fadeout_img(image, x, y, delay, background, screen):
 
 
 def press_key(app):
-    # Continue apres avoir presser une touche
     waiting = True
     while waiting:
         for event in pg.event.get():
@@ -32,3 +31,23 @@ def press_key(app):
                 app.quit()
             if event.type == pg.KEYUP:
                 waiting = False
+
+
+def draw_button(button, screen):
+    pg.draw.rect(screen, button['color'], button['rect'])
+    screen.blit(button['text'], button['text rect'])
+
+
+def create_button(x, y, w, h, text, callback, settings, color=(255, 255, 255)):
+    font = pg.font.Font(settings.instance.FONT_TEXT, 20)
+    text_surf = font.render(text, True, (255, 0, 0))
+    button_rect = pg.Rect(x, y, w, h)
+    text_rect = text_surf.get_rect(center=button_rect.center)
+    button = {
+        'rect': button_rect,
+        'text': text_surf,
+        'text rect': text_rect,
+        'color': color,
+        'callback': callback,
+    }
+    return button
