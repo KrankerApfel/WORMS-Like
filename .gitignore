@@ -125,5 +125,10 @@ dmypy.json
 
 # Pycharm
 
+<<<<<<< HEAD
 .idea/
 Documentation/Sphinx/
+=======
+.idea/
+Documentation/Sphinx/
+>>>>>>> master
