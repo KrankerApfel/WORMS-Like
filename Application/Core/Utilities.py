@@ -38,16 +38,16 @@ def draw_button(button, screen):
     screen.blit(button['text'], button['text rect'])
 
 
-def create_button(x, y, w, h, text, callback, settings, color=(255, 255, 255)):
-    font = pg.font.Font(settings.instance.FONT_TEXT, 20)
-    text_surf = font.render(text, True, (255, 0, 0))
+def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255), text_color = (255,0,0), font_size = 20):
+    font = pg.font.Font(settings.instance.FONT_TEXT, font_size)
+    text_surf = font.render(text, True, text_color)
     button_rect = pg.Rect(x, y, w, h)
     text_rect = text_surf.get_rect(center=button_rect.center)
     button = {
         'rect': button_rect,
         'text': text_surf,
         'text rect': text_rect,
-        'color': color,
+        'color': btn_color,
         'callback': callback,
     }
     return button
