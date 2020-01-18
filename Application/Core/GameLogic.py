@@ -12,11 +12,11 @@ class Game:
             "WORMS Motherfuckers !",
             1200,
             600,
-            "Graphics/icon.png",
+            "Graphics\\icon.png",
             "WORMS Like - Groupe 2",
             60,
-            "Graphics/Fonts/Godzilla.ttf",
-            "Graphics/Fonts/Lemon-Juice.ttf"
+            "Graphics\\Fonts\\Godzilla.ttf",
+            "Graphics\\Fonts\\Lemon-Juice.ttf"
         )
         self.screen = pg.display.set_mode((self.Settings.instance.SCREEN_WIDTH, self.Settings.instance.SCREEN_WIDTH))
         pg.display.set_icon(self.Settings.instance.ICON)
@@ -69,14 +69,13 @@ class Game:
         pg.display.flip()
 
     def splash_screen(self):
-        fadeout_img(pg.image.load(path_asset("Graphics/ESGI_logo.jpeg")),
+        fadeout_img(pg.image.load(path_asset("Graphics\\ESGI_logo.jpeg")),
                     self.Settings.instance.SCREEN_WIDTH / 3.5,
                     self.Settings.instance.SCREEN_HEIGHT / 2,
                     600,
                     (0, 0, 0),
                     self.screen
                     )
-        pg.time.delay(2400)
 
     def quit(self):
         self.on_menu = False

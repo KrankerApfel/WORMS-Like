@@ -15,11 +15,18 @@ def draw_text(text, size, color, x, y, font_name, screen):
     screen.blit(text_surface, text_rect)
 
 
-def fadeout_img(image, x, y, delay, background, screen):
-    screen.fill(background)
-    screen.blit(image, (x, y))
-    pg.time.delay(delay)
-    pg.display.flip()
+def fadeout_img(image, x, y, factor, background, screen):
+    i = 0
+    image = image.convert()
+    b = True
+    while b:
+        screen.fill(background)
+        image.set_alpha(i)
+        screen.blit(image, (x, y))
+        pg.display.flip()
+        i += factor/1200
+        print(i)
+        b = (i < factor)
 
 
 def press_key(app):
@@ -38,7 +45,8 @@ def draw_button(button, screen):
     screen.blit(button['text'], button['text rect'])
 
 
-def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255), text_color = (255,0,0), font_size = 20):
+def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255), text_color=(255, 0, 0),
+                  font_size=20):
     font = pg.font.Font(settings.instance.FONT_TEXT, font_size)
     text_surf = font.render(text, True, text_color)
     button_rect = pg.Rect(x, y, w, h)

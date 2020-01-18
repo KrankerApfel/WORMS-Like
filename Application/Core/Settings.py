@@ -2,9 +2,6 @@ from Application.Core.Utilities import path_asset
 import pygame as pg
 
 
-
-
-
 class Settings:
     class __SettingsSingleton:
         def __init__(self, title_game, screen_width, screen_height, icon_file_path, window_caption, fps,
@@ -16,8 +13,8 @@ class Settings:
             self.WINDOW_CAPTION = window_caption
             self.FPS = fps
             self.FONT_TITLE = path_asset(font_title_file_path)
-            self.TITLE_GAME = title_game
             self.FONT_TEXT = path_asset(font_text_file_path)
+            self.TITLE_GAME = title_game
 
         def __str__(self):
             return repr(self)
