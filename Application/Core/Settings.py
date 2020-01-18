@@ -3,6 +3,32 @@ import pygame as pg
 
 
 class Settings:
+    """"
+    A singleton to manage game settings. It contain only one instance that have to be called to used
+    his fields.
+
+    :Example:
+
+    Settings = Settings(*param) # call the constructor
+    screen_width = Settings.instance.SCREEN_WIDTH # use instance to access to settings fields.
+
+    :param title_game: The game title
+    :type title_game: str
+    :param screen_width: The screen width
+    :type screen_width: int
+    :param screen_height: The screen height
+    :type screen_height: int
+    :param icon_file_path: The path to the window title bar icon file
+    :type icon_file_path: str
+    :param window_caption: The text caption displayed on window title bar
+    :type window_caption: str
+    :param fps: The game frame per second
+    :type fps: int
+    :param font_title_file_path: The path to the title font file
+    :type font_title_file_path: str
+    :param font_text_file_path: The path to the text font file
+    :type font_text_file_path: str
+    """
     class __SettingsSingleton:
         def __init__(self, title_game, screen_width, screen_height, icon_file_path, window_caption, fps,
                      font_title_file_path,
