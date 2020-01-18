@@ -159,7 +159,7 @@ class Menu:
         :return: void
         """
         if event_button == 1:
-            self._game_part_data['worms_number'] += 1 if self._game_part_data['worms_number'] < 4 else 0
+            self._game_part_data['worms_number'] += 1 if self._game_part_data['worms_number'] < 8 else 0
         elif event_button == 3:
             self._game_part_data['worms_number'] -= 1 if self._game_part_data['worms_number'] > 1 else 0
 

@@ -1,10 +1,14 @@
 from Application.Core.Settings import *
 from Application.Core.Menu import *
-from Application.Core.Utilities import draw_text, fadeout_img, press_key
+from Application.Core.Utilities import image_fade_in
 import pygame as pg
 
 
 class Game:
+    """
+    The game class. It contains all the game logic and manage loops as physic update,
+    events handling or screen rendering.
+    """
     def __init__(self):
         pg.init()
         pg.mixer.init()
@@ -29,11 +33,18 @@ class Game:
         self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
 
     def new(self):
+        """
+        Function to load game assets and init parameters before run it.
+        :return: void
+        """
         self.run()
         pass
 
     def run(self):
-        # main loop
+        """
+        Application main loop.
+        :return: void
+        """
         self.playing = True
         while self.playing:
             self.clock.tick(Settings.instance.FPS)
@@ -51,7 +62,10 @@ class Game:
         pass
 
     def events(self):
-        # Input events handler loop
+        """
+        Event handling function.
+        :return: void
+        """
         if self.on_menu:
             self.menu.events()
             self.on_menu = False
@@ -61,23 +75,40 @@ class Game:
                 self.quit()
 
     def draw(self):
-        # display loop
+        """
+        Screen rendering function
+        :return: void
+        """
+
+        # Until we are on menu screen
         if self.on_menu:
             self.menu.draw()
+        # if we are on game screen
         else:
             self.screen.fill((50, 255, 1))
         pg.display.flip()
 
     def splash_screen(self):
-        fadeout_img(pg.image.load(path_asset("Graphics\\ESGI_logo.jpeg")),
-                    self.Settings.instance.SCREEN_WIDTH / 3.5,
-                    self.Settings.instance.SCREEN_HEIGHT / 2,
-                    600,
-                    (0, 0, 0),
-                    self.screen
-                    )
+        """
+        Function to displayed a splash screen. According to Wikipedia :
+        ''A splash screen is a graphical control element consisting of a window containing an image, a logo,
+          and the current version of the software. A splash screen usually appears while a game or program is launching.''
+        :return:
+        """
+        image_fade_in(pg.image.load(path_asset("Graphics\\splash.jpeg")),
+                      self.Settings.instance.SCREEN_WIDTH / 3.5,
+                      self.Settings.instance.SCREEN_HEIGHT / 2,
+                      300,
+                      (0, 0, 0),
+                      self.screen
+                      )
+
 
     def quit(self):
+        """
+        A function to quit the application frost-free.
+        :return: void
+        """
         self.on_menu = False
         self.playing = False
         self.running = False
