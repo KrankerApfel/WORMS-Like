@@ -51,9 +51,9 @@ class Menu:
 
         self._game_part_data = {'players_number': 2,
                             'worms_number': 1}
-        self.credits = "(c) ESGI 2020  -  Developpers : Lior DILER, Tom RAKOTOMANAMPISON, Antoine PAVY | " \
-                       "Graphic artist : Antoine PAVY  | " \
-                       'Musics : Tom RAKOTOMANAMPISON  | '
+        self.credits = "(c) ESGI 2020  -  Developpers : Lior DILER, Tom RAKOTOMANAMPISON, Antoine PAVY -- " \
+                       "Graphic artist : Antoine PAVY  -- " \
+                       'Musics : Tom RAKOTOMANAMPISON'
 
     def draw(self):
         """
@@ -80,10 +80,10 @@ class Menu:
                   )
 
         draw_text(self.credits,
-                  25,
+                  20,
                   (0, 0, 0),
                   self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_WIDTH / 2,
+                  self.Settings.instance.SCREEN_WIDTH / 5,
                   self.Settings.instance.FONT_TEXT,
                   self.screen
                   )
@@ -159,7 +159,7 @@ class Menu:
         :return: void
         """
         if event_button == 1:
-            self._game_part_data['worms_number'] += 1 if self._game_part_data['worms_number'] < 4 else 0
+            self._game_part_data['worms_number'] += 1 if self._game_part_data['worms_number'] < 8 else 0
         elif event_button == 3:
             self._game_part_data['worms_number'] -= 1 if self._game_part_data['worms_number'] > 1 else 0
 

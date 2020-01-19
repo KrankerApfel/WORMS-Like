@@ -71,6 +71,10 @@ def image_fade_in(image, x, y, factor, background, screen):
         i += factor / 800
         b = (i < 800)
 
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+
 
 # --- events utilities ---
 def press_key(app):
