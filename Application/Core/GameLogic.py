@@ -22,7 +22,7 @@ class Game:
             "Graphics\\Fonts\\Godzilla.ttf",
             "Graphics\\Fonts\\Lemon-Juice.ttf"
         )
-        self.screen = pg.display.set_mode((self.Settings.instance.SCREEN_WIDTH, self.Settings.instance.SCREEN_WIDTH))
+        self.screen = pg.display.set_mode((self.Settings.instance.SCREEN_WIDTH, self.Settings.instance.SCREEN_HEIGHT))
         pg.display.set_icon(self.Settings.instance.ICON)
         self.clock = pg.time.Clock()
         self.running = True
@@ -96,8 +96,8 @@ class Game:
         :return:
         """
         image_fade_in(pg.image.load(path_asset("Graphics\\splash.jpeg")),
-                      self.Settings.instance.SCREEN_WIDTH / 3.5,
-                      self.Settings.instance.SCREEN_HEIGHT / 2,
+                      0,
+                      0,
                       300,
                       (0, 0, 0),
                       self.screen
