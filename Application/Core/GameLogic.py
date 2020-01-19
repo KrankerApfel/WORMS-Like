@@ -24,6 +24,7 @@ class Game:
         )
         self.screen = pg.display.set_mode((self.Settings.instance.SCREEN_WIDTH, self.Settings.instance.SCREEN_HEIGHT))
         pg.display.set_icon(self.Settings.instance.ICON)
+        pg.display.set_caption(self.Settings.instance.TITLE_GAME)
         self.clock = pg.time.Clock()
         self.running = True
         self.on_menu = True
