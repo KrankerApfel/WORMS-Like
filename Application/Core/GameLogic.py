@@ -1,5 +1,6 @@
 from Application.Core.Settings import *
 from Application.Core.Menu import *
+from Application.Core.Match import *
 from Application.Core.Utilities import image_fade_in
 import pygame as pg
 
@@ -32,6 +33,7 @@ class Game:
         self.on_game_over = False
         self.playing = False
         self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
+        self.match = None
 
     def new(self):
         """
@@ -55,7 +57,8 @@ class Game:
             self.events()
 
     def update(self):
-        # update loop
+        if self.on_game:
+            self.match.update()
         pass
 
     def fixed_update(self):
@@ -70,6 +73,9 @@ class Game:
         if self.on_menu:
             self.menu.events()
             self.on_menu = False
+            self.match = Match(self.menu.game_part_data['players_number'], 10, self.screen)
+            self.on_game = True
+
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -87,6 +93,7 @@ class Game:
         # if we are on game screen
         else:
             self.screen.fill((50, 255, 1))
+            self.match.draw()
         pg.display.flip()
 
     def splash_screen(self):
