@@ -91,9 +91,9 @@ class Game:
         if self.on_menu:
             self.menu.draw()
         # if we are on game screen
-        else:
-            self.screen.fill((50, 255, 1))
-            self.match.draw()
+        elif self.on_game:
+            self.screen.blit(self.match.level["background"], (0, 0))
+            self.match.draw(self.screen)
         pg.display.flip()
 
     def splash_screen(self):
