@@ -73,9 +73,11 @@ class Game:
         if self.on_menu:
             self.menu.events()
             self.on_menu = False
-            self.match = Match(self.menu.game_part_data['players_number'], 10, self.screen)
+            self.match = Match(self.menu.game_part_data['players_number'],self.menu.game_part_data['worms_number'], 10, self.screen)
             self.on_game = True
 
+        if self.on_game :
+            self.match.events()
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
