@@ -13,9 +13,14 @@ class Ground(pg.sprite.Sprite):
     :type image_path: str
     """
     def __init__(self, image_path):
-        self.img = pg.image.load(path_asset(image_path))
-        self.img.set_colorkey((0, 0, 0))
-        self.mask = pg.mask.from_surface(self.img)
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.image.load(path_asset(image_path))
+        # an image can have only one color key, it's the rgb code of the not rendered color.
+        self.image.set_colorkey((0, 0, 0))
+        # set a rect may be  mandatory to check collision between pg.srite
+        # self.rect = self.image.get_rect()
+        # self.rect.topleft = (0, 0)
+        self.mask = pg.mask.from_surface(self.image)
 
     def update_mask(self, hole_radius, hole_position):
         """
@@ -24,14 +29,14 @@ class Ground(pg.sprite.Sprite):
         :param hole_radius: the radius of the hole
         :param hole_position: the position of the hole
         """
-        new_img = self.img.copy()
+        new_img = self.image.copy()
         pg.draw.circle(new_img, (0, 0, 0), hole_position, hole_radius)
-        self.img = new_img
-        self.mask = pg.mask.from_surface(self.img)
+        self.image = new_img
+        self.mask = pg.mask.from_surface(self.image)
 
     def draw(self, screen):
         """
         This function display the ground on screen.
         :param screen: the screen that displayed the ground
         """
-        screen.blit(self.img, (0, 0))
+        screen.blit(self.image, (0, 0))

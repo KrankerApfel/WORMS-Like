@@ -32,6 +32,7 @@ class Match:
             print(self.turnTimer)
             if self.turnTimer < 0:
                 print('Timeout !')
+                #self.level["ground"].update_mask(200, (100, 200)) # destruction test
                 self.current_player = self.players.pop(0)
                 self.players.append(self.current_player)
                 print('turn to ' + self.current_player + ' team !')
