@@ -1,5 +1,6 @@
 from Application.Entities.Characters import Player
 from Application.Environnement.Ground import *
+from Application.Entities.Characters import Worms
 import pygame as pg
 
 
@@ -23,26 +24,46 @@ class Match:
         self.current_player = self.players.pop(0)
         self.players.append(self.current_player)
 
-    def update(self):
+        self.worm_test = Worms()
+        self.worms_group = pg.sprite.Group(self.worm_test)
+        for i in range(3):
+            self.worms_group.add(Worms())
 
+    def update(self):
+        self.events()
+        self.worms_group.update()
         timeout = False
         if not timeout:  ## or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
             self.turnTimer -= 1
             if self.turnTimer < 0:
                 print('Timeout !')
-                #self.level["ground"].update_mask(200, (100, 200)) # destruction test
+                self.level["ground"].update_mask(200, (100, 200))  # destruction test
                 self.current_player = self.players.pop(0)
                 self.players.append(self.current_player)
-                print('turn to ' + self.current_player.name + ' team !')
+                #  print('turn to ' + self.current_player + ' team !')
+                self.worm_test.is_active = True
                 self.turnTimer = 1200
                 timeout = True
 
     def events(self):
         self.current_player.events()
 
+    def events(self):
+        for w in self.worms_group :
+            w.is_ground_colliding = pg.sprite.collide_mask(w, self.level["ground"])
+        keys = pg.key.get_pressed()
+
+        if keys[pg.K_UP]:
+            self.worm_test.jump()
+        if keys[pg.K_LEFT]:
+            self.worm_test.set_direction(-1)
+        if keys[pg.K_RIGHT]:
+            self.worm_test.set_direction(1)
+
     def draw(self, screen):
         self.level["ground"].draw(screen)
+        self.worms_group.draw(screen)
 
     def check_loose(self):
         for p in self.players:

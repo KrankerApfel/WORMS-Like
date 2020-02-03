@@ -15,8 +15,8 @@ class Game:
         pg.mixer.init()
         self.Settings = Settings(
             "WORMS Motherfuckers !",
-            1200,
-            600,
+            1024,
+            512,
             "Graphics\\icon.png",
             "WORMS Like - Groupe 2",
             60,
