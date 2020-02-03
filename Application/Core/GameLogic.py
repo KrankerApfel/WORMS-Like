@@ -10,6 +10,7 @@ class Game:
     The game class. It contains all the game logic and manage loops as physic update,
     events handling or screen rendering.
     """
+
     def __init__(self):
         pg.init()
         pg.mixer.init()
@@ -73,10 +74,11 @@ class Game:
         if self.on_menu:
             self.menu.events()
             self.on_menu = False
-            self.match = Match(self.menu.game_part_data['players_number'],self.menu.game_part_data['worms_number'], 10, self.screen)
+            self.match = Match(self.menu.game_part_data['players_number'], self.menu.game_part_data['worms_number'], 10,
+                               self.screen)
             self.on_game = True
 
-        if self.on_game :
+        if self.on_game:
             self.match.events()
 
         for event in pg.event.get():
@@ -112,7 +114,6 @@ class Game:
                       (0, 0, 0),
                       self.screen
                       )
-
 
     def quit(self):
         """
