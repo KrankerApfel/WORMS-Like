@@ -1,5 +1,6 @@
 from Application.Core.Settings import *
 from Application.Core.Menu import *
+from Application.Core.Match import *
 from Application.Core.Utilities import image_fade_in
 import pygame as pg
 
@@ -9,6 +10,7 @@ class Game:
     The game class. It contains all the game logic and manage loops as physic update,
     events handling or screen rendering.
     """
+
     def __init__(self):
         pg.init()
         pg.mixer.init()
@@ -32,6 +34,7 @@ class Game:
         self.on_game_over = False
         self.playing = False
         self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
+        self.match = None
 
     def new(self):
         """
@@ -55,7 +58,8 @@ class Game:
             self.events()
 
     def update(self):
-        # update loop
+        if self.on_game:
+            self.match.update()
         pass
 
     def fixed_update(self):
@@ -70,6 +74,12 @@ class Game:
         if self.on_menu:
             self.menu.events()
             self.on_menu = False
+            self.match = Match(self.menu.game_part_data['players_number'], self.menu.game_part_data['worms_number'], 10,
+                               self.screen)
+            self.on_game = True
+
+        if self.on_game:
+            self.match.events()
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -85,8 +95,9 @@ class Game:
         if self.on_menu:
             self.menu.draw()
         # if we are on game screen
-        else:
-            self.screen.fill((50, 255, 1))
+        elif self.on_game:
+            self.screen.blit(self.match.level["background"], (0, 0))
+            self.match.draw(self.screen)
         pg.display.flip()
 
     def splash_screen(self):
@@ -103,7 +114,6 @@ class Game:
                       (0, 0, 0),
                       self.screen
                       )
-
 
     def quit(self):
         """
