@@ -42,7 +42,6 @@ class Match:
                 self.current_player = self.players.pop(0)
                 self.players.append(self.current_player)
                 print('turn to ' + self.current_player.name + ' team !')
-                self.current_player.current_worm.is_active = True
                 self.turnTimer = 1200
                 timeout = True
 

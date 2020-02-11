@@ -19,7 +19,7 @@ class Player:
         self.name = name
         self.score = 0
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
-        self._current_worms = self.current_worm
+        self._current_worms = self.worms[0]
 
     def events(self):
         keys = pg.key.get_pressed()
