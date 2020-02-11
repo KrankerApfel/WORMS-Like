@@ -1,5 +1,5 @@
 import pygame as pg
-from Application.Core.Utilities import path_asset
+from Application.Core.Utilities import path_asset, Spritesheet
 from random import randrange
 
 
@@ -30,6 +30,9 @@ class Player:
         if keys[pg.K_UP]:
             self._current_worms.jump()
 
+        self._current_worms.is_idling = not (keys[pg.K_LEFT] or keys[pg.K_RIGHT])
+        self._current_worms.is_walking = keys[pg.K_LEFT] or keys[pg.K_RIGHT]
+
     def loose(self):
         return len(self.worms) == 0
 
@@ -41,21 +44,44 @@ class Worms(pg.sprite.Sprite):
     def __init__(self, name):
         pg.sprite.Sprite.__init__(self)
         self.name = name
-        self.image = worm_image
+        self._spritesheet_idle = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Idle.png"),
+                                             (0, 0, 16, 16), 2, 15)
+        self._spritesheet_jump = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Jump.png"),
+                                             (0, 0, 16, 16), 3, 15,loop=False)
+        self._spritesheet_walk = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Walk.png"),
+                                             (0, 0, 16, 16), 3, 15)
+        self._spritesheet_dead = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Dead.png"),
+                                             (0, 0, 16, 16), 4, 15,loop=False)
+        self.image = self._spritesheet_idle.frame_images[0]
         self.rect = self.image.get_rect()
         self.position = (randrange(1000), randrange(600))
         self.rect.center = self.position
         self.velocity = pg.math.Vector2(0, 0)
         self.acceleration = pg.math.Vector2(0, 0)
         self.drag = -0.5
-        self.speed = 5
-        self.gravity = 3
-        self.jump_force = 30
+        self.speed = 1
+        self.gravity = 0.8
+        self.jump_force = 7
         self.is_ground_colliding = None
+        self.is_jumping = False
+        self.is_dying = False
+        self.is_idling = True
+        self.is_walking = False
 
     def update(self):
         self.move()
         self.acceleration = pg.math.Vector2(0, 0)
+        self.update_animation()
+
+    def update_animation(self):
+        if self.is_idling:
+            self.image = self._spritesheet_idle.animate()
+        elif self.is_walking:
+            self.image = self._spritesheet_walk.animate()
+        elif self.is_jumping:
+            self.image = self._spritesheet_jump.animate()
+        elif self.is_dying:
+            self.image = self._spritesheet_dead.animate()
 
     def set_direction(self, x=None, y=None):
         if x:
@@ -67,13 +93,18 @@ class Worms(pg.sprite.Sprite):
     def move(self):
         if not self.is_ground_colliding:
             self.acceleration.y = self.gravity
+            self.is_idling = False
+            self.is_walking = False
+            self.is_jumping = True
+
         else:
             self.velocity.y = 0
+            self.is_jumping = False
+
         self.acceleration.x += self.velocity.x * self.drag
         # movement equations
         self.velocity += self.acceleration
         self.position += (self.velocity + 0.5 * self.acceleration)
-
         self.rect.center = self.position
 
     def jump(self):

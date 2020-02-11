@@ -145,3 +145,44 @@ def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255
         'callback': callback,
     }
     return button
+
+
+class Spritesheet:
+    @property
+    def frame_images(self):
+        return self._frames_images
+    def __init__(self, filename, frame_pg_rect_format, nb_frames, fps, colorkey=(255, 0, 255), loop=True):
+        try:
+            self._sheet = pg.image.load(filename).convert()
+        except pg.error:
+            print("loading {} spritesheet file failed.".format(filename))
+            raise SystemExit
+        self._frames_rect = [pg.Rect(frame_pg_rect_format[0], frame_pg_rect_format[1]+ frame_pg_rect_format[2] * x,
+                                     frame_pg_rect_format[2], frame_pg_rect_format[3]) for x in range(nb_frames)]
+        self._frames_images = [self.create_image(rect, colorkey) for rect in self._frames_rect]
+        self._loop = loop
+        self._index = 0
+        self._fps = fps
+        self._current_fps = fps
+
+    def create_image(self, rectangle, colorkey=None):
+        rect = pg.Rect(rectangle)
+        image = pg.Surface(rect.size)
+        image.set_colorkey(colorkey)
+        image.blit(self._sheet, (0, 0), rect)
+        return image
+
+    def animate(self):
+        if self._index >= len(self._frames_images):
+            if not self._loop:
+                return self._frames_images[len(self._frames_images)-1]
+            else:
+                self._index = 0
+        image = self._frames_images[self._index]
+        self._current_fps -= 1
+        if self._current_fps == 0:
+            self._index += 1
+            self._current_fps = self._fps
+        return image
+
+
