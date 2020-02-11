@@ -37,9 +37,6 @@ class Player:
         return len(self.worms) == 0
 
 
-worm_image = pg.image.load(path_asset("Graphics\\Spritesheets\\worm.png"))
-
-
 class Worms(pg.sprite.Sprite):
     def __init__(self, name):
         pg.sprite.Sprite.__init__(self)
@@ -47,11 +44,11 @@ class Worms(pg.sprite.Sprite):
         self._spritesheet_idle = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Idle.png"),
                                              (0, 0, 16, 16), 2, 15)
         self._spritesheet_jump = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Jump.png"),
-                                             (0, 0, 16, 16), 3, 15,loop=False)
+                                             (0, 0, 16, 16), 3, 15, loop=False)
         self._spritesheet_walk = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Walk.png"),
-                                             (0, 0, 16, 16), 3, 15)
+                                             (0, 0, 16, 16), 3, 10)
         self._spritesheet_dead = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Dead.png"),
-                                             (0, 0, 16, 16), 4, 15,loop=False)
+                                             (0, 0, 16, 16), 4, 15, loop=False)
         self.image = self._spritesheet_idle.frame_images[0]
         self.rect = self.image.get_rect()
         self.position = (randrange(1000), randrange(600))
@@ -67,6 +64,7 @@ class Worms(pg.sprite.Sprite):
         self.is_dying = False
         self.is_idling = True
         self.is_walking = False
+        self._flip = False
 
     def update(self):
         self.move()
@@ -83,9 +81,15 @@ class Worms(pg.sprite.Sprite):
         elif self.is_dying:
             self.image = self._spritesheet_dead.animate()
 
+        self.image = pg.transform.flip(self.image, self._flip, False)
+
     def set_direction(self, x=None, y=None):
         if x:
             self.acceleration.x = self.speed * x
+            if x > 0:
+                self._flip = True
+            elif x < 0:
+                self._flip = False
 
         if y:
             self.acceleration.y = self.speed * y
@@ -112,3 +116,7 @@ class Worms(pg.sprite.Sprite):
         if self.is_ground_colliding:
             self.is_ground_colliding = None
             self.velocity.y = -self.jump_force
+
+    def die(self):
+        self.is_walking = self.is_idling = self.is_jumping = False
+        self.is_dying = True
