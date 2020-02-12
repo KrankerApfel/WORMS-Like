@@ -20,15 +20,17 @@ class Match:
         self.current_player = self.players.pop(0)
         self.players.append(self.current_player)
         self.worms_group = pg.sprite.Group()
+        self.all_sprites_group = pg.sprite.Group(self.level["ground"])
         for player in self.players:
             for worm in player.worms:
                 self.worms_group.add(worm)
+                self.all_sprites_group.add(worm)
 
     def update(self):
         self.events()
         self.worms_group.update()
         for w in self.worms_group:
-            w.is_ground_colliding = pg.sprite.collide_mask(self.level["ground"], w)
+            w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
         timeout = False
         if not timeout:  ## or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
