@@ -1,6 +1,7 @@
 import pygame as pg
 from Application.Core.Utilities import path_asset
 from random import randrange
+from Application.Entities.Weapons import *
 
 
 class Player:
@@ -20,8 +21,13 @@ class Player:
         self.score = 0
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
         self._current_worms = self.current_worm
+        self.target = Target()
+        self.targetPosition = (0, 0)
 
     def events(self):
+        # self.target.rect.center = self._current_worms.position
+        self.target.player_position = self._current_worms.position
+        # self.target.update()
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
             self._current_worms.set_direction(-1)
@@ -52,6 +58,8 @@ class Worms(pg.sprite.Sprite):
         self.gravity = 3
         self.jump_force = 30
         self.is_ground_colliding = None
+        self.frag = Frag(50, self.rect.center, self.drag, self.speed, self.gravity)
+        self.bazooka = Bazooka(100, self.rect.center, self.drag, self.speed, self.gravity)
 
     def update(self):
         self.move()
@@ -60,7 +68,6 @@ class Worms(pg.sprite.Sprite):
     def set_direction(self, x=None, y=None):
         if x:
             self.acceleration.x = self.speed * x
-
         if y:
             self.acceleration.y = self.speed * y
 
