@@ -2,7 +2,10 @@ from Application.Core.Settings import *
 from Application.Core.Menu import *
 from Application.Core.Match import *
 from Application.Core.Utilities import image_fade_in
+import os
+import random
 import pygame as pg
+from yaml import load, BaseLoader
 
 
 class Game:
@@ -35,6 +38,7 @@ class Game:
         self.playing = False
         self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
         self.match = None
+
 
     def new(self):
         """
@@ -75,7 +79,13 @@ class Game:
             self.menu.events()
             self.on_menu = False
             self.match = Match(self.menu.game_part_data['players_number'], self.menu.game_part_data['worms_number'], 10,
-                               self.screen)
+                               level_dict=random.choice(
+                                   list(
+                                       load(
+                                           open(os.path.join("Application", "Data", "Levels.yml"), 'r'),
+                                               Loader= BaseLoader
+                                       ).values()
+                                   )))
             self.on_game = True
 
         if self.on_game:
