@@ -1,5 +1,6 @@
 import pygame as pg
 from Application.Core.Utilities import path_asset, Spritesheet
+from Application.Environnement.Terrain import Ground
 from random import randrange
 
 
@@ -108,15 +109,32 @@ class Worms(pg.sprite.Sprite):
         elif not self._is_jumping:
             self.velocity.y = 0
             self._play_jump_animation = False
+            for o in self.collided_objects:
+                if not o == self:
+
+                    p = self.collide(o)
+                    if p[0]:
+                        self.velocity.x = self.acceleration.x = 0
 
         self.acceleration.x += self.velocity.x * self.drag
+        for o in self.collided_objects:
+            if isinstance(o, Ground):
+
+                p = self.collide(o)
+                print(p)
+
+                if p[1] < 0:
+                    self.velocity.y = self.acceleration.y = 0
+                    self.position = (self.position[0], self.position[1] - self.rect.height / 2)
+                elif p[1] > 0:
+                    self.velocity.y = self.acceleration.y = self.gravity
         # movement equations
         self.velocity += self.acceleration
         self.position += (self.velocity + 0.5 * self.acceleration)
-        if len(self.collided_objects) > 1:
-            self.rect.center = (self.position[0], self.position[1] - self.rect.height / 2)
-        else:
-            self.rect.center = self.position
+
+
+
+        self.rect.center = self.position
 
     def jump(self):
 
@@ -127,3 +145,35 @@ class Worms(pg.sprite.Sprite):
     def die(self):
         self._play_walking_animation = self._play_idling_animation = self._play_jump_animation = False
         self._play_dying_animation = True
+
+    def collide(self, s):
+
+        offset = list(map(int, vsub(s.rect, self.rect)))
+
+        overlap = self.mask.overlap_area(s.mask, offset)
+
+        if overlap == 0:
+            return None, overlap
+
+        """Calculate collision normal"""
+        nx = (self.mask.overlap_area(s.mask, (offset[0] + 1, offset[1])) -
+              self.mask.overlap_area(s.mask, (offset[0] - 1, offset[1])))
+        ny = (self.mask.overlap_area(s.mask, (offset[0], offset[1] + 1)) -
+              self.mask.overlap_area(s.mask, (offset[0], offset[1] - 1)))
+
+        if nx == 0 and ny == 0:
+            """One sprite is inside another"""
+            return None, overlap
+        return (nx, ny)
+
+
+def vadd(x, y):
+    return [x[0] + y[0], x[1] + y[1]]
+
+
+def vsub(x, y):
+    return [x[0] + 5 - y[0], x[1] + 5 - y[1]]  # 5 distance avant le mur
+
+
+def vdot(x, y):
+    return x[0] * y[0] + x[1] * y[1]

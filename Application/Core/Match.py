@@ -1,5 +1,5 @@
 from Application.Entities.Characters import Player
-from Application.Environnement.Ground import *
+from Application.Environnement.Terrain import *
 from Application.Entities.Characters import Worms
 import pygame as pg
 
