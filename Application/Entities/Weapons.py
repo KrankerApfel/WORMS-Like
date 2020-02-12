@@ -29,12 +29,6 @@ class Weapon(pg.sprite.Sprite):
     def events(self):
         # equation de cercle pour que le visuer tourne autour du joeuur
         keys = pg.key.get_pressed()
-        if keys[pg.K_UP]:
-            self.target.aim(self.target.angle + 0.1)
-        if keys[pg.K_DOWN]:
-            self.target.aim(self.target.angle - 0.1)
-        if keys[pg.K_SPACE]:
-            self.shoot()
 
     def update(self):
         self.events()
@@ -93,7 +87,7 @@ class Target(pg.sprite.Sprite):
         self.angle = angle
         self.x = self.radius * cos(angle) + self.player_position[0]
         self.y = self.radius * sin(angle) + self.player_position[1]
-        print(self.x, self.y)
+        print(sin(angle))
         self.rect.center = (self.x, self.y)
 
     @property
@@ -111,3 +105,6 @@ class Target(pg.sprite.Sprite):
     @is_active.setter
     def is_active(self, value):
         self._is_active = value
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.center)

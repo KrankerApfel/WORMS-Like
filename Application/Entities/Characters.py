@@ -1,7 +1,8 @@
 import pygame as pg
 from Application.Core.Utilities import path_asset
 from random import randrange
-from Application.Entities.Weapons import *
+
+from Application.Entities.Weapons import Frag, Bazooka
 
 
 class Player:
@@ -21,12 +22,9 @@ class Player:
         self.score = 0
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
         self._current_worms = self.current_worm
-        self.target = Target()
-        self.targetPosition = (0, 0)
 
     def events(self):
         # self.target.rect.center = self._current_worms.position
-        self.target.player_position = self._current_worms.position
         # self.target.update()
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
@@ -38,6 +36,10 @@ class Player:
 
     def loose(self):
         return len(self.worms) == 0
+
+    @property
+    def current_worms(self):
+        return self._current_worms
 
 
 worm_image = pg.image.load(path_asset("Graphics\\Spritesheets\\worm.png"))

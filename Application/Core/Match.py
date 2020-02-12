@@ -1,6 +1,8 @@
 from Application.Entities.Characters import Player
 from Application.Environnement.Ground import *
 from Application.Entities.Characters import Worms
+from Application.Entities.Weapons import *
+
 import pygame as pg
 
 
@@ -25,9 +27,10 @@ class Match:
         self.current_player = self.players.pop(0)
         self.players.append(self.current_player)
         self.worms_group = pg.sprite.Group()
-        self.targets_group = pg.sprite.Group()
+        self.target = Target()
+        self.targetPosition = (0, 0)
         for player in self.players:
-            self.targets_group.add(player.target)
+            # self.targets_group.add(player.target)
             for worm in player.worms:
                 self.worms_group.add(worm)
                 # self.worms_group.add(worm.frag)
@@ -35,7 +38,8 @@ class Match:
     def update(self):
         self.events()
         self.worms_group.update()
-        self.targets_group.update()
+        self.target.update()
+        # self.targets_group.update()
         timeout = False
         if not timeout:  # or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
@@ -52,6 +56,7 @@ class Match:
 
     def events(self):
         self.current_player.events()
+        self.target.player_position = self.current_player.current_worm.rect
 
         for w in self.worms_group:
             w.is_ground_colliding = pg.sprite.collide_mask(w, self.level["ground"])
@@ -59,7 +64,7 @@ class Match:
     def draw(self, screen):
         self.level["ground"].draw(screen)
         self.worms_group.draw(screen)
-        self.targets_group.draw(screen)
+        self.target.draw(screen)
 
     def check_loose(self):
         for p in self.players:
