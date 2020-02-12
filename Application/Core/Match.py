@@ -27,6 +27,8 @@ class Match:
     def update(self):
         self.events()
         self.worms_group.update()
+        for w in self.worms_group:
+            w.is_ground_colliding = pg.sprite.collide_mask(self.level["ground"], w)
         timeout = False
         if not timeout:  ## or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
@@ -43,8 +45,7 @@ class Match:
     def events(self):
         self.current_player.events()
 
-        for w in self.worms_group:
-            w.is_ground_colliding = pg.sprite.collide_mask(w, self.level["ground"])
+
      
 
     def draw(self, screen):

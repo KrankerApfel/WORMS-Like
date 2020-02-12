@@ -58,12 +58,13 @@ class Worms(pg.sprite.Sprite):
         self.drag = -0.5
         self.speed = 1
         self.gravity = 0.8
-        self.jump_force = 7
+        self.jump_force = 15
         self.is_ground_colliding = None
         self.is_jumping = False
         self.is_dying = False
         self.is_idling = True
         self.is_walking = False
+        self._test = False
         self._flip = False
 
     def update(self):
@@ -100,10 +101,12 @@ class Worms(pg.sprite.Sprite):
             self.is_idling = False
             self.is_walking = False
             self.is_jumping = True
+            self._test = self.is_ground_colliding
 
         else:
-            self.velocity.y = 0
-            self.is_jumping = False
+            if not self._test:
+                self.velocity.y = 0
+                self.is_jumping = False
 
         self.acceleration.x += self.velocity.x * self.drag
         # movement equations
@@ -114,8 +117,13 @@ class Worms(pg.sprite.Sprite):
     def jump(self):
 
         if self.is_ground_colliding:
-            self.is_ground_colliding = None
             self.velocity.y = -self.jump_force
+            self._test = True
+
+    def collide(self):
+        if self.is_ground_colliding:
+
+            self.rect.center = (self.is_ground_colliding[0], self.is_ground_colliding[1] + 10*self.rect.height / 2)
 
     def die(self):
         self.is_walking = self.is_idling = self.is_jumping = False
