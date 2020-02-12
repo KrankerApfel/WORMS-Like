@@ -9,13 +9,8 @@ class Match:
     This class represent a game part, namely a match between players.
     """
 
-    def __init__(self, player_number, worms_number, timer_delay, level=None):
-        self.level_data = dict(background='Graphics/Backgrounds/BKG_theme_1.png',
-                               terrain='Graphics/Spritesheets/ground_lvl_1.bmp',
-                               wind_velocity=(0, 0),
-                               music='path/to/music.ogg',
-                               ambiant='path/to/sonor_ambiant.wav')
-
+    def __init__(self, player_number, worms_number, timer_delay, level_dict):
+        self.level_data = level_dict
         self.level = dict()
         self.level["background"] = pg.image.load(path_asset(self.level_data['background']))
         self.level["ground"] = Ground(self.level_data['terrain'])
