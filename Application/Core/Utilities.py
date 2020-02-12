@@ -8,7 +8,6 @@ def path_asset(path):
        Indeed, os don't used the same path conventions."""
     return os.path.join('Assets', path)
 
-
 # --- graphics manipulation ---
 def draw_text(text, size, color, x, y, font_path, screen):
     """
