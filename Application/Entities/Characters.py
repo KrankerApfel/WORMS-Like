@@ -1,10 +1,13 @@
 import pygame as pg
+from yaml import load, BaseLoader,SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
 from random import randrange
-
+import os
 from Application.Entities.Weapons import Frag, Bazooka
 
+physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+            "Physic"]
 
 class Player:
 
@@ -64,10 +67,10 @@ class Worms(pg.sprite.Sprite):
         self.rect.center = self.position
         self.velocity = pg.math.Vector2(0, 0)
         self.acceleration = pg.math.Vector2(0, 0)
-        self.drag = -0.5
-        self.speed = 1
-        self.gravity = 0.8
-        self.jump_force = 10
+        self.drag = physic["WORMS_DRAG"]
+        self.speed = physic["WORMS_SPEED"]
+        self.gravity = physic["GRAVITY"]
+        self.jump_force = physic["WORMS_JUMP_FORCE"]
         self.collided_objects = []
         self._play_jump_animation = False
         self._play_dying_animation = False
