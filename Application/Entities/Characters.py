@@ -1,5 +1,6 @@
 import pygame as pg
-from Application.Core.Utilities import path_asset, Spritesheet
+from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
+from Application.Environnement.Terrain import Ground
 from random import randrange
 
 from Application.Entities.Weapons import Frag, Bazooka
@@ -34,8 +35,8 @@ class Player:
         if keys[pg.K_w]:
             self._current_worms.jump()
 
-        self._current_worms.is_idling = not (keys[pg.K_LEFT] or keys[pg.K_RIGHT])
-        self._current_worms.is_walking = keys[pg.K_LEFT] or keys[pg.K_RIGHT]
+        self._current_worms._play_idling_animation = not (keys[pg.K_LEFT] or keys[pg.K_RIGHT])
+        self._current_worms._play_walking_animation = keys[pg.K_LEFT] or keys[pg.K_RIGHT]
 
     def loose(self):
         return len(self.worms) == 0
@@ -66,13 +67,15 @@ class Worms(pg.sprite.Sprite):
         self.drag = -0.5
         self.speed = 1
         self.gravity = 0.8
-        self.jump_force = 7
-        self.is_ground_colliding = None
-        self.is_jumping = False
-        self.is_dying = False
-        self.is_idling = True
-        self.is_walking = False
-        self.flip = False
+        self.jump_force = 10
+        self.collided_objects = []
+        self._play_jump_animation = False
+        self._play_dying_animation = False
+        self._play_idling_animation = True
+        self._play_walking_animation = False
+        self._is_jumping = False
+        self._flip = False
+        self.mask = pg.mask.from_surface(self.image)
 
     def update(self):
         self.move()
@@ -80,39 +83,56 @@ class Worms(pg.sprite.Sprite):
         self.update_animation()
 
     def update_animation(self):
-        if self.is_idling:
+        if self._play_idling_animation:
             self.image = self._spritesheet_idle.animate()
-        elif self.is_walking:
+        elif self._play_walking_animation:
             self.image = self._spritesheet_walk.animate()
-        elif self.is_jumping:
+        elif self._play_jump_animation:
             self.image = self._spritesheet_jump.animate()
-        elif self.is_dying:
+        elif self._play_dying_animation:
             self.image = self._spritesheet_dead.animate()
 
-        self.image = pg.transform.flip(self.image, self.flip, False)
+        self.image = pg.transform.flip(self.image, self._flip, False)
 
     def set_direction(self, x=None, y=None):
         if x:
             self.acceleration.x = self.speed * x
             if x > 0:
-                self.flip = True
+                self._flip = True
             elif x < 0:
-                self.flip = False
+                self._flip = False
         if y:
             self.acceleration.y = self.speed * y
 
     def move(self):
-        if not self.is_ground_colliding:
-            self.acceleration.y = self.gravity
-            self.is_idling = False
-            self.is_walking = False
-            self.is_jumping = True
 
-        else:
+        if len(self.collided_objects) <= 1:
+            self.acceleration.y = self.gravity
+            self._play_idling_animation = False
+            self._play_walking_animation = False
+            self._play_jump_animation = True
+            self._is_jumping = len(self.collided_objects) > 1
+
+        elif not self._is_jumping:
             self.velocity.y = 0
-            self.is_jumping = False
+            self._play_jump_animation = False
+            for o in self.collided_objects:
+                if not o == self:
+
+                    p = get_mask_collision_normal(self,o)
+                    if p[0]:
+                        self.velocity.x = self.acceleration.x = 0
 
         self.acceleration.x += self.velocity.x * self.drag
+        for o in self.collided_objects:
+            if isinstance(o, Ground):
+
+                p = get_mask_collision_normal(self, o)
+                if p[1] < 0:
+                    self.velocity.y = self.acceleration.y = 0
+                    self.position = (self.position[0], self.position[1] - self.rect.height / 2)
+                elif p[1] > 0:
+                    self.velocity.y = self.acceleration.y = self.gravity
         # movement equations
         self.velocity += self.acceleration
         self.position += (self.velocity + 0.5 * self.acceleration)
@@ -120,10 +140,11 @@ class Worms(pg.sprite.Sprite):
 
     def jump(self):
 
-        if self.is_ground_colliding:
-            self.is_ground_colliding = None
+        if len(self.collided_objects) > 1:
             self.velocity.y = -self.jump_force
+            self._is_jumping = True
 
     def die(self):
-        self.is_walking = self.is_idling = self.is_jumping = False
-        self.is_dying = True
+        self._play_walking_animation = self._play_idling_animation = self._play_jump_animation = False
+        self._play_dying_animation = True
+

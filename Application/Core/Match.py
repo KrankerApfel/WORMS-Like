@@ -1,5 +1,5 @@
 from Application.Entities.Characters import Player
-from Application.Environnement.Ground import *
+from Application.Environnement.Terrain import *
 from Application.Entities.Characters import Worms
 from Application.Entities.Weapons import *
 
@@ -22,19 +22,22 @@ class Match:
         self.current_player = self.players.pop(0)
         self.players.append(self.current_player)
         self.worms_group = pg.sprite.Group()
+        self.all_sprites_group = pg.sprite.Group(self.level["ground"])
         self.target = Target()
         self.targetPosition = (0, 0)
         for player in self.players:
             # self.targets_group.add(player.target)
             for worm in player.worms:
                 self.worms_group.add(worm)
-                # self.worms_group.add(worm.frag)
+                self.all_sprites_group.add(worm)
 
     def update(self):
         self.events()
         self.worms_group.update()
         self.target.update()
         # self.targets_group.update()
+        for w in self.worms_group:
+            w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
         timeout = False
         if not timeout:  # or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
@@ -53,8 +56,8 @@ class Match:
         self.target.player_position = self.current_player.current_worm.rect
         # self.target._flip = self.current_player.current_worm.flip
 
-        for w in self.worms_group:
-            w.is_ground_colliding = pg.sprite.collide_mask(w, self.level["ground"])
+
+     
 
     def draw(self, screen):
         self.level["ground"].draw(screen)
