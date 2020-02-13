@@ -2,6 +2,8 @@ import pygame as pg
 from Application.Core.Utilities import path_asset, Spritesheet
 from random import randrange
 
+from Application.Entities.Weapons import Frag, Bazooka
+
 
 class Player:
 
@@ -22,6 +24,8 @@ class Player:
         self._current_worms = self.worms[0]
 
     def events(self):
+        # self.target.rect.center = self._current_worms.position
+        # self.target.update()
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
             self._current_worms.set_direction(-1)
@@ -35,6 +39,10 @@ class Player:
 
     def loose(self):
         return len(self.worms) == 0
+
+    @property
+    def current_worms(self):
+        return self._current_worms
 
 
 class Worms(pg.sprite.Sprite):
@@ -64,7 +72,7 @@ class Worms(pg.sprite.Sprite):
         self.is_dying = False
         self.is_idling = True
         self.is_walking = False
-        self._flip = False
+        self.flip = False
 
     def update(self):
         self.move()
@@ -81,16 +89,15 @@ class Worms(pg.sprite.Sprite):
         elif self.is_dying:
             self.image = self._spritesheet_dead.animate()
 
-        self.image = pg.transform.flip(self.image, self._flip, False)
+        self.image = pg.transform.flip(self.image, self.flip, False)
 
     def set_direction(self, x=None, y=None):
         if x:
             self.acceleration.x = self.speed * x
             if x > 0:
-                self._flip = True
+                self.flip = True
             elif x < 0:
-                self._flip = False
-
+                self.flip = False
         if y:
             self.acceleration.y = self.speed * y
 
