@@ -1,11 +1,10 @@
-from Application.Core.Settings import *
 from Application.Core.Menu import *
 from Application.Core.Match import *
 from Application.Core.Utilities import image_fade_in
 import os
 import random
 import pygame as pg
-from yaml import load, BaseLoader
+from yaml import load, BaseLoader,SafeLoader
 
 
 class Game:
@@ -17,28 +16,19 @@ class Game:
     def __init__(self):
         pg.init()
         pg.mixer.init()
-        self.Settings = Settings(
-            "WORMS Motherfuckers !",
-            1200,
-            600,
-            "Graphics\\icon.png",
-            "WORMS Like - Groupe 2",
-            60,
-            "Graphics\\Fonts\\Godzilla.ttf",
-            "Graphics\\Fonts\\Lemon-Juice.ttf"
-        )
-        self.screen = pg.display.set_mode((self.Settings.instance.SCREEN_WIDTH, self.Settings.instance.SCREEN_HEIGHT))
-        pg.display.set_icon(self.Settings.instance.ICON)
-        pg.display.set_caption(self.Settings.instance.TITLE_GAME)
+        self.App_config = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+            "Application"]
+        self.screen = pg.display.set_mode((self.App_config["SCREEN_WIDTH"], self.App_config["SCREEN_HEIGHT"]))
+        pg.display.set_icon(pg.image.load(path_asset(self.App_config["ICON"])))
+        pg.display.set_caption(self.App_config["TITLE_GAME"])
         self.clock = pg.time.Clock()
         self.running = True
         self.on_menu = True
         self.on_game = False
         self.on_game_over = False
         self.playing = False
-        self.menu = Menu((163, 195, 208), self.Settings, self.screen, self)
+        self.menu = Menu((163, 195, 208),  self.App_config, self.screen, self)
         self.match = None
-
 
     def new(self):
         """
@@ -55,7 +45,7 @@ class Game:
         """
         self.playing = True
         while self.playing:
-            self.clock.tick(Settings.instance.FPS)
+            self.clock.tick( self.App_config["FPS"])
             self.draw()
             self.fixed_update()
             self.update()
@@ -83,7 +73,7 @@ class Game:
                                    list(
                                        load(
                                            open(os.path.join("Application", "Data", "Levels.yml"), 'r'),
-                                               Loader= BaseLoader
+                                           Loader=BaseLoader
                                        ).values()
                                    )))
             self.on_game = True

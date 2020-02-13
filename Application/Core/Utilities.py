@@ -29,7 +29,7 @@ def draw_text(text, size, color, x, y, font_path, screen):
     :type screen: Pygame.Surface
     :return: void
     """
-    font = pg.font.Font(font_path, size)
+    font = pg.font.Font(path_asset(font_path), size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
@@ -124,7 +124,7 @@ def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255
     :type text: str
     :param callback: The function call when the button is clicking
     :param settings: The singleton that contains game parameters
-    :type settings: Application.Core.Settings
+    :type settings: Application settings
     :param btn_color: The RGB code of the button color
     :type btn_color: tuple
     :param text_color: The RGB code of the text color
@@ -133,7 +133,7 @@ def create_button(x, y, w, h, text, callback, settings, btn_color=(255, 255, 255
     :type font_size: int
     :return: void
     """
-    font = pg.font.Font(settings.instance.FONT_TEXT, font_size)
+    font = pg.font.Font(path_asset(settings["FONT_TEXT"]), font_size)
     text_surf = font.render(text, True, text_color)
     button_rect = pg.Rect(x, y, w, h)
     text_rect = text_surf.get_rect(center=button_rect.center)
