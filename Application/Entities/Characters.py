@@ -27,11 +27,11 @@ class Player:
         # self.target.rect.center = self._current_worms.position
         # self.target.update()
         keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT]:
+        if keys[pg.K_a]:
             self._current_worms.set_direction(-1)
-        if keys[pg.K_RIGHT]:
+        if keys[pg.K_d]:
             self._current_worms.set_direction(1)
-        if keys[pg.K_UP]:
+        if keys[pg.K_w]:
             self._current_worms.jump()
 
         self._current_worms.is_idling = not (keys[pg.K_LEFT] or keys[pg.K_RIGHT])
