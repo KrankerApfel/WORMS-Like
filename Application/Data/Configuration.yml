@@ -1,0 +1,17 @@
+---
+Application :
+  TITLE_GAME : !!str "Worms Motherfucker's"
+  SCREEN_WIDTH : !!int 1200
+  SCREEN_HEIGHT : !!int 600
+  ICON : !!str 'Graphics/Backgrounds/BKG_theme_1.png'
+  WINDOW_CAPTION : !!str  'WORMS Like - Groupe 2'
+  FPS : !!int 60
+  FONT_TITLE : !!str "Graphics\\Fonts\\Godzilla.ttf"
+  FONT_TEXT : !!str "Graphics\\Fonts\\Lemon-Juice.ttf"
+
+Physic:
+  GRAVITY : !!float 0.8
+  GROUND_BOUNCING_FACTOR : !!float 2
+  WORMS_DRAG : !!float -0.5
+  WORMS_SPEED : !!int 1
+  WORMS_JUMP_FORCE : !!int 10

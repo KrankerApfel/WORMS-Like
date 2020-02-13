@@ -11,7 +11,7 @@ class Menu:
     :param background_color: The background menu color RGB code.
     :type background_color: A tuple filled with RGB value as (r,g,b).
     :param settings: The singleton used to set games parameters
-    :type settings: :class:`Application.Core.Settings`
+    :type settings: :dict: Application settings
     :param screen: The screen the menu belows
     :type screen: :class:`Pygame.Surface`
     :param app: The game the menu belows
@@ -19,6 +19,7 @@ class Menu:
     :param party_data: A dictionary containing data to the incoming game part as players number and worms per player.
     :type party_data: dict
     """
+
     @property
     def game_part_data(self):
         return self._game_part_data
@@ -30,19 +31,19 @@ class Menu:
         self.app = app
         self.buttons = [
             create_button(
-                self.Settings.instance.SCREEN_WIDTH / 3,
-                self.Settings.instance.SCREEN_HEIGHT / 1.5,
-                self.Settings.instance.SCREEN_WIDTH / 15,
-                self.Settings.instance.SCREEN_HEIGHT / 12,
+                self.Settings["SCREEN_WIDTH"] / 3,
+                self.Settings["SCREEN_HEIGHT"] / 1.5,
+                self.Settings["SCREEN_WIDTH"] / 15,
+                self.Settings["SCREEN_HEIGHT"] / 12,
                 "nb players : +/-",
                 lambda e: self.add_player(e),
                 self.Settings),
 
             create_button(
-                self.Settings.instance.SCREEN_WIDTH / 1.8,
-                self.Settings.instance.SCREEN_HEIGHT / 1.5,
-                self.Settings.instance.SCREEN_WIDTH / 15,
-                self.Settings.instance.SCREEN_HEIGHT / 12,
+                self.Settings["SCREEN_WIDTH"] / 1.8,
+                self.Settings["SCREEN_HEIGHT"] / 1.5,
+                self.Settings["SCREEN_WIDTH"] / 15,
+                self.Settings["SCREEN_HEIGHT"] / 12,
                 "nb worms +/-",
                 lambda e: self.add_worms(e),
                 self.Settings)
@@ -50,7 +51,7 @@ class Menu:
         ]
 
         self._game_part_data = {'players_number': 2,
-                            'worms_number': 1}
+                                'worms_number': 1}
         self.credits = "(c) ESGI 2020  -  Developpers : Lior DILER, Tom RAKOTOMANAMPISON, Antoine PAVY -- " \
                        "Graphic artist : Antoine PAVY  -- " \
                        'Musics : Tom RAKOTOMANAMPISON'
@@ -61,30 +62,30 @@ class Menu:
         :return: void
         """
         self.screen.fill(self.background_color)
-        draw_text(self.Settings.instance.TITLE_GAME,
+        draw_text(self.Settings["TITLE_GAME"],
                   100,
                   (231, 156, 73),
-                  self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_HEIGHT / 4,
-                  self.Settings.instance.FONT_TITLE,
+                  self.Settings["SCREEN_WIDTH"]/ 2,
+                  self.Settings["SCREEN_HEIGHT"] / 4,
+                  self.Settings["FONT_TITLE"],
                   self.screen
                   )
 
         draw_text("Press start",
                   50,
                   (231, 156, 73),
-                  self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_HEIGHT / 2,
-                  self.Settings.instance.FONT_TEXT,
+                  self.Settings["SCREEN_WIDTH"] / 2,
+                  self.Settings["SCREEN_HEIGHT"] / 2,
+                  self.Settings["FONT_TEXT"],
                   self.screen
                   )
 
         draw_text(self.credits,
                   20,
                   (0, 0, 0),
-                  self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_WIDTH / 5,
-                  self.Settings.instance.FONT_TEXT,
+                  self.Settings["SCREEN_WIDTH"]/ 2,
+                  self.Settings["SCREEN_HEIGHT"] / 5,
+                  self.Settings["FONT_TEXT"],
                   self.screen
                   )
 
@@ -94,18 +95,18 @@ class Menu:
         draw_text("Players : " + str(self._game_part_data['players_number']),
                   25,
                   (0, 0, 0),
-                  self.Settings.instance.SCREEN_WIDTH / 2.5,
-                  self.Settings.instance.SCREEN_HEIGHT / 1.2,
-                  self.Settings.instance.FONT_TEXT,
+                  self.Settings["SCREEN_WIDTH"]/ 2.5,
+                  self.Settings["SCREEN_HEIGHT"] / 1.2,
+                  self.Settings["FONT_TEXT"],
                   self.screen
                   )
 
         draw_text("Worms : " + str(self._game_part_data['worms_number']),
                   25,
                   (0, 0, 0),
-                  self.Settings.instance.SCREEN_WIDTH / 2,
-                  self.Settings.instance.SCREEN_HEIGHT / 1.2,
-                  self.Settings.instance.FONT_TEXT,
+                  self.Settings["SCREEN_WIDTH"] / 2,
+                  self.Settings["SCREEN_HEIGHT"] / 1.2,
+                  self.Settings["FONT_TEXT"],
                   self.screen
                   )
 
@@ -129,7 +130,8 @@ class Menu:
 
                 if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
                     # check if players and worms numbers are valid
-                    waiting = not (self._game_part_data['players_number'] > 1) or not (self._game_part_data['worms_number'] > 0)
+                    waiting = not (self._game_part_data['players_number'] > 1) or not (
+                                self._game_part_data['worms_number'] > 0)
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                     # buttons listener, it handle callback if the mouse position collide a button rect.
