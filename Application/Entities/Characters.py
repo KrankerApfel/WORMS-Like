@@ -44,6 +44,7 @@ class Player:
     def current_worms(self):
         return self._current_worms
 
+
 class Worms(pg.sprite.Sprite):
     def __init__(self, name):
         pg.sprite.Sprite.__init__(self)
@@ -71,7 +72,7 @@ class Worms(pg.sprite.Sprite):
         self.is_dying = False
         self.is_idling = True
         self.is_walking = False
-        self._flip = False
+        self.flip = False
 
     def update(self):
         self.move()
@@ -88,15 +89,15 @@ class Worms(pg.sprite.Sprite):
         elif self.is_dying:
             self.image = self._spritesheet_dead.animate()
 
-        self.image = pg.transform.flip(self.image, self._flip, False)
+        self.image = pg.transform.flip(self.image, self.flip, False)
 
     def set_direction(self, x=None, y=None):
         if x:
             self.acceleration.x = self.speed * x
             if x > 0:
-                self._flip = True
+                self.flip = True
             elif x < 0:
-                self._flip = False
+                self.flip = False
         if y:
             self.acceleration.y = self.speed * y
 

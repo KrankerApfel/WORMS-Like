@@ -51,6 +51,7 @@ class Match:
     def events(self):
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
+        # self.target._flip = self.current_player.current_worm.flip
 
         for w in self.worms_group:
             w.is_ground_colliding = pg.sprite.collide_mask(w, self.level["ground"])

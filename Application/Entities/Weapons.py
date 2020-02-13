@@ -1,6 +1,6 @@
 import pygame as pg
 from Application.Core.Utilities import path_asset
-from math import cos, sin
+from math import cos, sin, pi
 
 frag = pg.image.load(path_asset("Graphics\\Spritesheets\\Grenade.png"))
 bazooka = pg.image.load(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"))
@@ -67,16 +67,27 @@ class Target(pg.sprite.Sprite):
         self.radius = 120
         self.angle = 0
         self.is_active = False
+        self._flip = False
 
     def events(self):
         if not self.is_active:
+            angle = self.angle
             keys = pg.key.get_pressed()
             if keys[pg.K_UP]:
-                self.aim(self.angle + 0.1)
+                angle += 0.1
             if keys[pg.K_DOWN]:
-                self.aim(self.angle - 0.1)
+                angle -= 0.1
+            if keys[pg.K_LEFT] and self._flip:
+                self._flip = False
+                self.swap_angle()
+            if keys[pg.K_RIGHT] and not self._flip:
+                self._flip = True
+                self.swap_angle()
+
             if keys[pg.K_SPACE]:
                 self.shoot()
+
+            self.aim(angle)
         else:
             self.rect.center = (0, 0)
 
@@ -84,11 +95,14 @@ class Target(pg.sprite.Sprite):
         self.events()
 
     def aim(self, angle):
-        self.angle = angle
-        self.x = self.radius * cos(angle) + self.player_position[0]
-        self.y = self.radius * sin(angle) + self.player_position[1]
-        print(sin(angle))
+        if (self._flip and cos(angle) >= 0) or (not self._flip and cos(angle) <= 0):
+            self.angle = angle
+            self.x = self.radius * cos(angle) + self.player_position[0]
+            self.y = self.radius * sin(angle) + self.player_position[1]
         self.rect.center = (self.x, self.y)
+
+    def swap_angle(self):
+        self.angle = pi - self.angle
 
     @property
     def player_position(self):
@@ -105,6 +119,14 @@ class Target(pg.sprite.Sprite):
     @is_active.setter
     def is_active(self, value):
         self._is_active = value
+
+    @property
+    def flip(self):
+        return self._flip
+
+    @flip.setter
+    def flip(self, value):
+        self._flip = value
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.center)
