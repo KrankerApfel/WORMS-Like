@@ -77,10 +77,10 @@ class Target(pg.sprite.Sprite):
                 angle += 0.1
             if keys[pg.K_DOWN]:
                 angle -= 0.1
-            if keys[pg.K_LEFT] and self._flip:
+            if keys[pg.K_a] and self._flip:
                 self._flip = False
                 self.swap_angle()
-            if keys[pg.K_RIGHT] and not self._flip:
+            if keys[pg.K_d] and not self._flip:
                 self._flip = True
                 self.swap_angle()
 
