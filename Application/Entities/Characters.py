@@ -1,5 +1,5 @@
 import pygame as pg
-from yaml import load, BaseLoader,SafeLoader
+from yaml import load, BaseLoader, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
 from random import randrange
@@ -7,10 +7,12 @@ import os
 from Application.Entities.Weapons import Frag, Bazooka
 
 physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
-            "Physic"]
+    "Physic"]
+
 
 class Player:
 
+    # change current worm
     @property
     def current_worm(self):
         self._current_worms = self.worms.pop(0)
@@ -122,7 +124,7 @@ class Worms(pg.sprite.Sprite):
             for o in self.collided_objects:
                 if not o == self:
 
-                    p = get_mask_collision_normal(self,o)
+                    p = get_mask_collision_normal(self, o)
                     if p[0]:
                         self.velocity.x = self.acceleration.x = 0
 
@@ -150,4 +152,3 @@ class Worms(pg.sprite.Sprite):
     def die(self):
         self._play_walking_animation = self._play_idling_animation = self._play_jump_animation = False
         self._play_dying_animation = True
-

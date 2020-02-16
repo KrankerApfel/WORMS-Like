@@ -2,7 +2,7 @@ from Application.Entities.Characters import Player
 from Application.Environnement.Terrain import *
 from Application.Entities.Characters import Worms
 from Application.Entities.Weapons import *
-
+import time
 import pygame as pg
 
 
@@ -10,6 +10,10 @@ class Match:
     """
     This class represent a game part, namely a match between players.
     """
+    gravity = 9.81
+    windPower = 0
+    windDirection = 0
+    drag = 0
 
     def __init__(self, player_number, worms_number, timer_delay, level_dict):
         self.level_data = level_dict
@@ -25,6 +29,7 @@ class Match:
         self.all_sprites_group = pg.sprite.Group(self.level["ground"])
         self.target = Target()
         self.targetPosition = (0, 0)
+        self.weapon = None
         for player in self.players:
             # self.targets_group.add(player.target)
             for worm in player.worms:
@@ -35,6 +40,8 @@ class Match:
         self.events()
         self.worms_group.update()
         self.target.update()
+        if self.weapon is not None:
+            self.weapon.update()
         # self.targets_group.update()
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
@@ -54,15 +61,24 @@ class Match:
     def events(self):
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
+        keys = pg.key.get_pressed()
+        if keys[pg.K_1]:
+            self.weapon = Frag(self.current_player.current_worm.rect, 0, 5)
+        if keys[pg.K_2]:
+            self.weapon = Bazooka()
+        if keys[pg.K_SPACE]:
+            # stop timer
+            # wait for shoot to end and reset timer and change player
+            if self.weapon is not None:
+                self.weapon.shoot(pg.time.get_ticks()/1000, self.target.angle)
         # self.target._flip = self.current_player.current_worm.flip
-
-
-     
 
     def draw(self, screen):
         self.level["ground"].draw(screen)
         self.worms_group.draw(screen)
         self.target.draw(screen)
+        if self.weapon is not None:
+            self.weapon.draw(screen)
 
     def check_loose(self):
         for p in self.players:
