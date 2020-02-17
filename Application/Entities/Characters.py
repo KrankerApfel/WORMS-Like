@@ -8,6 +8,8 @@ from Application.Entities.Weapons import Frag, Bazooka
 
 physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
             "Physic"]
+param = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+            "Parameters"]
 
 class Player:
 
@@ -53,6 +55,7 @@ class Worms(pg.sprite.Sprite):
     def __init__(self, name):
         pg.sprite.Sprite.__init__(self)
         self.name = name
+        self.life = param["WORMS_LIFE"]
         self._spritesheet_idle = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Idle.png"),
                                              (0, 0, 16, 16), 2, 15)
         self._spritesheet_jump = Spritesheet(path_asset("Graphics\\Spritesheets\\Worms-Jump.png"),
