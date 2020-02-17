@@ -11,6 +11,7 @@ target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 class Weapon(pg.sprite.Sprite):
     #gravity = 9.81
     gravity = 500
+
     def __init__(self, damage, image, position, drag, v0):
         pg.sprite.Sprite.__init__(self)
         self.image = image
@@ -46,18 +47,14 @@ class Frag(Weapon):
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 500, frag_image, position, drag, 500)
 
-    def shoot(self, initial_t, angle):
+    def shoot(self, time_held, angle):
         self.t = 0
-        self.initial_t = initial_t
+        self.initial_t = pg.time.get_ticks() / 1000 # initial_t
         self.angle = angle
-        # pos.x = positionintial  * cos(angle) * time
-        # pos.y = -1/2* gravity * time² + positinital * sin angle * time
-        # y = #
-        # self.rect.center(x, y)
+        self.v0 = (time_held/2 * 500) # v0 = inital speed
 
     def update_position(self):
-        # if shoot() is called
-        print("hi")
+        # V0 = (t/tmax) * vmaxspeed
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t

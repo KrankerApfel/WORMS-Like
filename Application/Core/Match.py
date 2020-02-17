@@ -2,7 +2,6 @@ from Application.Entities.Characters import Player
 from Application.Environnement.Terrain import *
 from Application.Entities.Characters import Worms
 from Application.Entities.Weapons import *
-import time
 import pygame as pg
 
 
@@ -14,6 +13,11 @@ class Match:
     windPower = 0
     windDirection = 0
     drag = 0
+    count = 0
+    is_shooting = False
+    t = 0
+    getting_time = False
+    end_shooting = True
 
     def __init__(self, player_number, worms_number, timer_delay, level_dict):
         self.level_data = level_dict
@@ -66,11 +70,22 @@ class Match:
             self.weapon = Frag(self.current_player.current_worm.rect, 0, 5)
         if keys[pg.K_2]:
             self.weapon = Bazooka()
-        if keys[pg.K_SPACE]:
-            # stop timer
+        if keys[pg.K_SPACE] and self.end_shooting:
+            self.is_shooting = True
+            self.getting_time = True
+            self.end_shooting = False
             # wait for shoot to end and reset timer and change player
+        if keys[pg.K_SPACE] and self.getting_time:
+            self.t = pg.time.get_ticks()
+            self.getting_time = False
+
+        if not keys[pg.K_SPACE] and self.is_shooting:
             if self.weapon is not None:
-                self.weapon.shoot(pg.time.get_ticks()/1000, self.target.angle)
+                self.weapon.shoot((pg.time.get_ticks() - self.t)/1000, self.target.angle)
+            self.end_shooting = True
+            self.is_shooting = False
+
+
         # self.target._flip = self.current_player.current_worm.flip
 
     def draw(self, screen):
