@@ -55,6 +55,7 @@ class Frag(Weapon):
 
     def update_position(self):
         # V0 = (t/tmax) * vmaxspeed
+
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
