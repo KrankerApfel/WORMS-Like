@@ -47,7 +47,7 @@ class Match:
         self.events()
         self.worms_group.update()
         self.target.update()
-        if self.weapon is not None:
+        if self.weapon:
             self.weapon.update()
         # self.targets_group.update()
         for w in self.worms_group:
@@ -68,11 +68,13 @@ class Match:
     def events(self):
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
+        if self.weapon:
+            self.weapon.update_idle_postion(self.current_player.current_worm.position)
         keys = pg.key.get_pressed()
         if keys[pg.K_1]:
-            self.weapon = Frag(self.current_player.current_worm.rect, 0, 5)
+            self.weapon = Frag(self.current_player.current_worm.position, 0, 5)
         if keys[pg.K_2]:
-            self.weapon = Bazooka()
+            self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
 
         if self.can_shoot:  #if in game state to shoot
             if keys[pg.K_SPACE] and self.end_shooting: #if started pressing space
