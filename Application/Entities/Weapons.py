@@ -50,8 +50,7 @@ class Ballistic(pg.sprite.Sprite):
 
     def update(self):
         self.update_position()
-        print(len(self.collided_objects))
-
+        
     def update_position(self):
 
         # V0 = (t/tmax) * vmaxspeed
@@ -92,27 +91,6 @@ class Weapon(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self._ballistic = None
 
-    def shoot(self, initial_t, angle):
-        # calculate angle and physic of weapon
-        print("printing from weapon")
-
-    def draw(self, screen):
-        if self.idle:
-            screen.blit(self.image, self.rect.center)
-
-    def update_idle_position(self, position, angle, player_position):
-        if self.idle:
-            self.rect.center = (position[0], position[1])
-            x = 5 * cos(angle) + player_position[0]
-            y = 5 * sin(angle) + player_position[1]
-            self.rect.center = (x, y)
-
-class HandWithFrag(Weapon):
-    def __init__(self, position):
-        Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\FragInHand.png"),
-                                          (0, 0, 16, 16), 1, 15), position)
-        self._ballistic = Frag(position, 0, 5)
-
     def shoot(self, time_held, angle):
         self._ballistic.shoot(time_held, angle)
         self.idle = False
@@ -126,6 +104,22 @@ class HandWithFrag(Weapon):
     def update(self):
         if not self.idle:
             self._ballistic.update_position()
+
+    def update_idle_position(self, position, angle, player_position):
+        if self.idle:
+            self.rect.center = (position[0], position[1])
+            x = 5 * cos(angle) + player_position[0]
+            y = 5 * sin(angle) + player_position[1]
+            self.rect.center = (x, y)
+
+
+class HandWithFrag(Weapon):
+    def __init__(self, position):
+        Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\FragInHand.png"),
+                                          (0, 0, 16, 16), 1, 15), position)
+        self._ballistic = Frag(position, 0, 5)
+
+
 
 
 class Frag(Ballistic):
@@ -142,14 +136,14 @@ class Bazooka(Weapon):
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
                                           (0, 0, 16, 16), 1, 15), position)
+        self._ballistic = Rocket(position, 0, 5)
 
-    def shoot(self, initial_t, angle):
-        # calculate angle and physic of bazooka and call specific sprite
-        print("printing from frag")
 
-    def update_position(self):
-        # TODO
-        return
+class Rocket(Ballistic):
+    def __init__(self, position, drag, v0):
+        Ballistic.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Bomb.png"),
+                                                  (0, 0, 16, 16), 4, 15), position, drag, 500, physic["ROCKET_MASS"])
+        self.rect.center = (self.pos_initial[0], self.pos_initial[1])
 
 
 class Target(pg.sprite.Sprite):
