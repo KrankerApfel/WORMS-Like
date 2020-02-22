@@ -1,20 +1,17 @@
 import pygame as pg
 
-from Application.Core.Utilities import path_asset
+from Application.Core.Utilities import path_asset,Spritesheet
 from math import cos, sin, pi
-
-frag_image = pg.image.load(path_asset("Graphics\\Spritesheets\\Grenade.png"))
-bazooka_image = pg.image.load(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"))
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 
 
 class Weapon(pg.sprite.Sprite):
-    #gravity = 9.81
+    # gravity = 9.81
     gravity = 500
 
-    def __init__(self, damage, image, position, drag, v0):
+    def __init__(self, damage, spritesheet, position, drag, v0):
         pg.sprite.Sprite.__init__(self)
-        self.image = image
+        self.image = spritesheet.frame_images[0]
         self.rect = self.image.get_rect()
         self.rect.center = (0, 0)
         self.pos_initial = position
@@ -27,6 +24,8 @@ class Weapon(pg.sprite.Sprite):
         self.damage = damage
         self.t = 0
         self.initial_t = 0
+        self.idle = True
+        self.mask = pg.mask.from_surface(self.image)
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of weapon
@@ -35,8 +34,11 @@ class Weapon(pg.sprite.Sprite):
     def update(self):
         self.update_position()
 
-    def update_position(self):
-        return
+    def update_position(self): return
+
+    def update_idle_postion(self, position):
+        if self.idle:
+            self.rect.center = (position[0], position[1])
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.center)
@@ -45,13 +47,17 @@ class Weapon(pg.sprite.Sprite):
 class Frag(Weapon):
 
     def __init__(self, position, drag, v0):
-        Weapon.__init__(self, 500, frag_image, position, drag, 500)
+        Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
+                                             (0, 0, 16, 16), 1, 15), position, drag, 500)
+        self.rect.center = (self.pos_initial[0], self.pos_initial[1])
 
     def shoot(self, time_held, angle):
+        self.idle = False
+
         self.t = 0
-        self.initial_t = pg.time.get_ticks() / 1000 # initial_t
+        self.initial_t = pg.time.get_ticks() / 1000  # initial_t
         self.angle = angle
-        self.v0 = (time_held/2 * 500) # v0 = inital speed
+        self.v0 = (time_held / 2 * 500)  # v0 = inital speed
 
     def update_position(self):
         # V0 = (t/tmax) * vmaxspeed
@@ -65,8 +71,9 @@ class Frag(Weapon):
 
 class Bazooka(Weapon):
 
-    def __init__(self, damage, position, drag, v0, gravity):
-        Weapon.__init__(self, damage, bazooka_image, position, drag, v0, gravity)
+    def __init__(self, position, drag, v0):
+        Weapon.__init__(self, 50, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
+                                             (0, 0, 16, 16), 1, 15) , position, drag, v0, 500)
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of bazooka and call specific sprite

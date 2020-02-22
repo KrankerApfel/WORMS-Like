@@ -1,7 +1,6 @@
 import pygame as pg
 import os
 
-
 # --- OS compatibility function --
 def path_asset(path):
     """A function to access assets folder without broke os compatibility.
