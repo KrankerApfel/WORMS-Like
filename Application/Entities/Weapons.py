@@ -50,7 +50,7 @@ class Ballistic(pg.sprite.Sprite):
 
     def update(self):
         self.update_position()
-        
+
     def update_position(self):
 
         # V0 = (t/tmax) * vmaxspeed

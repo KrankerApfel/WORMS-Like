@@ -190,7 +190,7 @@ class Spritesheet:
 
 def get_mask_collision_normal(a, b):
     """
-     Compute collision normal betweeb two sprite with mask as it explain
+     Compute collision normal between two sprite with mask as it explain
      on Pygame documentation see : https://www.pygame.org/docs/ref/mask.html
      for more details.
 
