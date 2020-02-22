@@ -7,7 +7,7 @@ import pygame as pg
 
 class Match:
     """
-    This class represent a game part, namely a match between players.
+    This class represent a game part, namely a match between plaoyers.
     """
     gravity = 9.81
     windPower = 0

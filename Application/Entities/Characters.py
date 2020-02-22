@@ -97,6 +97,7 @@ class Player:
                 if self.weapon is not None:
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
+                    print("start shooting")
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                     self.start_shooting_time = 0
 
@@ -104,10 +105,11 @@ class Player:
                 self.is_shooting = False
 
             if keys[inputs["SHOOT"]] and self.start_shooting_time != 0 and (
-                    pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
+                    pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2 and self.weapon is Frag:  # if holding space and its been more than 2 seconds shoot
                 if self.weapon is not None:
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
+                    print("start shooting")
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                     self.start_shooting_time = 0
                 self.is_shooting = False
