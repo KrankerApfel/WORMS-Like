@@ -1,6 +1,6 @@
 from Application.Entities.Characters import Player
 from Application.Environnement.Terrain import *
-from Application.Entities.Characters import Worms
+from Application.Core.Utilities import draw_text
 from Application.Entities.Weapons import *
 
 import pygame as pg
@@ -38,6 +38,7 @@ class Match:
         # self.targets_group.update()
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
+
         timeout = False
         if not timeout:  # or self.current_player.pa <= 0 or self.current_player.passed_turn()
 
@@ -55,9 +56,10 @@ class Match:
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
         # self.target._flip = self.current_player.current_worm.flip
-
-
-     
+        keys = keys = pg.key.get_pressed()
+        if keys[pg.K_c]:
+            self.current_player.current_worm.hurt(5, (0.5, -0.8))
+            print(self.current_player.current_worm.life)
 
     def draw(self, screen):
         self.level["ground"].draw(screen)
