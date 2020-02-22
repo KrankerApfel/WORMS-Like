@@ -9,6 +9,19 @@ Application :
   FONT_TITLE : !!str "Graphics\\Fonts\\Godzilla.ttf"
   FONT_TEXT : !!str "Graphics\\Fonts\\Lemon-Juice.ttf"
 
+Parameters :
+  WORMS_LIFE : 100
+  MAX_SCORE : 1000
+
+Inputs :
+  CHANGE_WEAPONS : !!int 303
+  SHOOT : !!int 32
+  JUMP : !!int 119
+  MOVE_LEFT : !!int 97
+  MOVE_RIGHT : !!int 100
+  AIM_UP : !!int 273
+  AIM_DOWN : !!int 274
+
 Physic:
   GRAVITY : !!float 0.8
   GROUND_BOUNCING_FACTOR : !!float 2

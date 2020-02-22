@@ -40,3 +40,6 @@ class Ground(pg.sprite.Sprite):
         :param screen: the screen that displayed the ground
         """
         screen.blit(self.image, (0, 0))
+
+    def __repr__(self):
+        return "Ground"
