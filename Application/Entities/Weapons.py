@@ -51,7 +51,7 @@ class Weapon(pg.sprite.Sprite):
 
     def update_idle_postion(self, position):
         if self.idle:
-            self.rect.center = (position[0] + 10, position[1] - 10)
+            self.rect.center = (position[0], position[1])
 
 
 class Frag(Weapon):
@@ -59,7 +59,8 @@ class Frag(Weapon):
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
                                                (0, 0, 16, 16), 1, 15), position, drag, 500)
-        self.rect.center = (self.pos_initial[0] + 10, self.pos_initial[1] - 10)
+        self.rect.center = (self.pos_initial[0] , self.pos_initial[1] )
+        self.timer = 50
 
     def shoot(self, time_held, angle):
         self.idle = False
@@ -77,7 +78,9 @@ class Frag(Weapon):
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
             self.rect.center = (x, y)
-            self.explode()
+            self.timer -=1
+            if self.timer <= 0:
+                self.explode()
 
     def explode(self):
         if self.collided_objects:
