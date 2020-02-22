@@ -8,13 +8,13 @@ from math import cos, sin, pi
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Inputs"]
+physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Physic"]
 
 
-class Weapon(pg.sprite.Sprite):
-    # gravity = 9.81
-    gravity = 500
+class Ballistic(pg.sprite.Sprite):
 
-    def __init__(self, damage, spritesheet, position, drag, v0):
+    def __init__(self, damage, spritesheet, position, drag, v0, mass):
         pg.sprite.Sprite.__init__(self)
         self.image = spritesheet.frame_images[0]
         self.rect = self.image.get_rect()
@@ -27,38 +27,14 @@ class Weapon(pg.sprite.Sprite):
         self.angle = 0
         self.is_colliding = False
         self.damage = damage
+        self.gravity = physic['GRAVITY'] * mass
         self.t = 0
         self.initial_t = 0
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
         self.exploded = False
-
-    def shoot(self, initial_t, angle):
-        # calculate angle and physic of weapon
-        print("printing from weapon")
-
-    def update(self):
-        self.update_position()
-
-    def draw(self, screen):
-        if not self.exploded:
-            screen.blit(self.image, self.rect.center)
-
-    def update_position(self):
-        return
-
-    def update_idle_postion(self, position):
-        if self.idle:
-            self.rect.center = (position[0], position[1])
-
-
-class Frag(Weapon):
-
-    def __init__(self, position, drag, v0):
-        Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
-                                               (0, 0, 16, 16), 1, 15), position, drag, 500)
-        self.rect.center = (self.pos_initial[0] , self.pos_initial[1] )
+        self.rect.center = (self.pos_initial[0], self.pos_initial[1])
         self.timer = 50
 
     def shoot(self, time_held, angle):
@@ -68,7 +44,16 @@ class Frag(Weapon):
         self.angle = angle
         self.v0 = (time_held / 2 * 500)  # v0 = inital speed
 
+    def draw(self, screen):
+        if not self.exploded:
+            screen.blit(self.image, self.rect.center)
+
+    def update(self):
+        self.update_position()
+        print(len(self.collided_objects))
+
     def update_position(self):
+
         # V0 = (t/tmax) * vmaxspeed
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
@@ -89,11 +74,74 @@ class Frag(Weapon):
             self.exploded = True
 
 
+class Weapon(pg.sprite.Sprite):
+    @property
+    def ballistic(self):
+        return self._ballistic
+
+    @ballistic.setter
+    def ballistic(self, value):
+        self._ballistic = value
+
+    def __init__(self, spritesheet, position):
+        pg.sprite.Sprite.__init__(self)
+        self.image = spritesheet.frame_images[0]
+        self.rect = self.image.get_rect()
+        self.rect.center = (0, 0)
+        self.idle = True
+        self.mask = pg.mask.from_surface(self.image)
+        self._ballistic = None
+
+    def shoot(self, initial_t, angle):
+        # calculate angle and physic of weapon
+        print("printing from weapon")
+
+    def draw(self, screen):
+        if self.idle:
+            screen.blit(self.image, self.rect.center)
+
+    def update_idle_position(self, position, angle, player_position):
+        if self.idle:
+            self.rect.center = (position[0], position[1])
+            x = 5 * cos(angle) + player_position[0]
+            y = 5 * sin(angle) + player_position[1]
+            self.rect.center = (x, y)
+
+class HandWithFrag(Weapon):
+    def __init__(self, position):
+        Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\FragInHand.png"),
+                                          (0, 0, 16, 16), 1, 15), position)
+        self._ballistic = Frag(position, 0, 5)
+
+    def shoot(self, time_held, angle):
+        self._ballistic.shoot(time_held, angle)
+        self.idle = False
+
+    def draw(self, screen):
+        if self.idle:
+            screen.blit(self.image, self.rect.center)
+        else:
+            self._ballistic.draw(screen)
+
+    def update(self):
+        if not self.idle:
+            self._ballistic.update_position()
+
+
+class Frag(Ballistic):
+
+    def __init__(self, position, drag, v0):
+        Ballistic.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
+                                                  (0, 0, 16, 16), 1, 15), position, drag, 500, physic["FRAG_MASS"])
+        self.rect.center = (self.pos_initial[0], self.pos_initial[1])
+        self.timer = 50
+
+
 class Bazooka(Weapon):
 
     def __init__(self, position, drag, v0):
-        Weapon.__init__(self, 50, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
-                                              (0, 0, 16, 16), 1, 15), position, drag, v0)
+        Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
+                                          (0, 0, 16, 16), 1, 15), position)
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of bazooka and call specific sprite

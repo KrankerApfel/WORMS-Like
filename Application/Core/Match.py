@@ -46,7 +46,10 @@ class Match:
         self.target.update()
         if self.current_player.weapon:
             self.current_player.weapon.update()
-            self.current_player.weapon.collided_objects = pg.sprite.spritecollide(self.current_player.weapon, self.all_sprites_group, False, pg.sprite.collide_mask)
+            if self.current_player.weapon.ballistic:
+                self.current_player.weapon.ballistic.collided_objects = \
+                    pg.sprite.spritecollide(self.current_player.weapon.ballistic,
+                                            self.all_sprites_group, False, pg.sprite.collide_mask)
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
 
@@ -67,41 +70,6 @@ class Match:
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
         self.current_player.target = self.target
-      #  if self.weapon:
-         #   self.weapon.update_idle_postion(self.current_player.current_worm.position)
-       # keys = pg.key.get_pressed()
-      #  if keys[pg.K_1]:
-       #     self.weapon = Frag(self.current_player.current_worm.position, 0, 5)
-       # if keys[pg.K_2]:
-        #    self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
-
-        #if self.can_shoot:  # if in game state to shoot
-        #    if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
-          #      self.is_shooting = True
-          #      self.start_shooting_time = pg.time.get_ticks()
-          #      self.end_shooting = False
-
-         #   if not keys[pg.K_SPACE] and self.is_shooting: #if the space key is not pressed and was pressed before
-          #      if self.weapon is not None:
-               #     self.shooting_time = pg.time.get_ticks()
-              #      self.can_shoot = False
-              #      self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time)/1000, self.target.angle)
-              #      self.start_shooting_time = 0
-
-              #  self.end_shooting = True
-             #   self.is_shooting = False
-
-         #   if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (pg.time.get_ticks() - self.start_shooting_time)/1000 > 2: #if holding space and its been more than 2 seconds shoot
-              #  if self.weapon is not None:
-              #      self.shooting_time = pg.time.get_ticks()
-            #        self.can_shoot = False
-            #        self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
-            #        self.start_shooting_time = 0
-           #     self.is_shooting = False
-           #    self.end_shooting = True
-       #if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5: #if it has been 5 second, can start shooting again
-          #  self.can_shoot = True
-            # self.target._flip = self.current_player.current_worm.flip
 
     def draw(self, screen):
         self.level["ground"].draw(screen)

@@ -2,7 +2,7 @@ import pygame as pg
 from yaml import load, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
-from Application.Entities.Weapons import Frag, Bazooka
+from Application.Entities.Weapons import Frag, Bazooka, HandWithFrag
 from random import randrange
 import os
 
@@ -67,16 +67,16 @@ class Player:
             self.weapon_index = (self.weapon_index+1)%len(self.inventory)
             if self.inventory[self.weapon_index].__eq__("Frag"):
                 self.weapon = None
-                self.weapon = Frag(self._current_worms.position, 0, 5)
+                self.weapon = HandWithFrag(self._current_worms.rect.center)
             elif self.inventory[self.weapon_index].__eq__("Bazooka"):
                 self.weapon = None
-                self.weapon = Bazooka(self._current_worms.position, 0, 5)
+                self.weapon = Bazooka(self._current_worms.rect.center, 0, 5)
             else :
                 self.weapon = None
 
         self.shooting_logic(keys)
         if self.weapon:
-            self.weapon.update_idle_postion(self._current_worms.position)
+            self.weapon.update_idle_position(self._current_worms.position, self.target.angle, self._current_worms.rect.center)
 
     def loose(self):
         return len(self.worms) == 0
@@ -137,7 +137,7 @@ class Worms(pg.sprite.Sprite):
         self.acceleration = pg.math.Vector2(0, 0)
         self.drag = physic["WORMS_DRAG"]
         self.speed = physic["WORMS_SPEED"]
-        self.gravity = physic["GRAVITY"]
+        self.gravity = physic["GRAVITY"]*physic["WORMS_MASS"]
         self.jump_force = physic["WORMS_JUMP_FORCE"]
         self.collided_objects = []
         self._play_jump_animation = False
