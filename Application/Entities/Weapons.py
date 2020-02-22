@@ -1,17 +1,14 @@
 import pygame as pg
 import os
 from yaml import load, SafeLoader
-from Application.Core.Utilities import path_asset, Spritesheet
+from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
 from Application.Entities.Characters import Worms
 from math import cos, sin, pi
 
-<<<<<<< HEAD
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Inputs"]
-=======
->>>>>>> slave
 
 
 class Weapon(pg.sprite.Sprite):
@@ -36,6 +33,7 @@ class Weapon(pg.sprite.Sprite):
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
+        self.exploded = False
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of weapon
@@ -44,14 +42,16 @@ class Weapon(pg.sprite.Sprite):
     def update(self):
         self.update_position()
 
-    def update_position(self): return
+    def draw(self, screen):
+        if not self.exploded:
+            screen.blit(self.image, self.rect.center)
+
+    def update_position(self):
+        return
 
     def update_idle_postion(self, position):
         if self.idle:
             self.rect.center = (position[0] + 10, position[1] - 10)
-
-    def draw(self, screen):
-        screen.blit(self.image, self.rect.center)
 
 
 class Frag(Weapon):
@@ -80,12 +80,13 @@ class Frag(Weapon):
             self.explode()
 
     def explode(self):
-        if len(self.collided_objects) > 1:
+        if self.collided_objects:
             for o in self.collided_objects:
-                if isinstance(o, Ground):
+                if isinstance(o, Ground) and not self.exploded:
                     o.update_mask(50, self.rect.center)
                 elif isinstance(o, Worms) and not o.__eq__(self):
                     o.hurt(50, get_mask_collision_normal(o, self))
+            self.exploded = True
 
 
 class Bazooka(Weapon):

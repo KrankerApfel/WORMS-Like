@@ -78,6 +78,7 @@ class Match:
         if keys[pg.K_2]:
             self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
 
+
         if self.can_shoot:  #if in game state to shoot
             if keys[pg.K_SPACE] and self.end_shooting: #if started pressing space
                 self.is_shooting = True
@@ -115,7 +116,7 @@ class Match:
         self.level["ground"].draw(screen)
         self.worms_group.draw(screen)
         self.target.draw(screen)
-        if self.weapon is not None:
+        if self.weapon:
             self.weapon.draw(screen)
 
     def check_loose(self):
