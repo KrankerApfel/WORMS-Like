@@ -119,28 +119,27 @@ class Frag(Ballistic):
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
         self.timer = 50
 
-        def shoot(self, time_held, angle):
-            print("shooting from frag")
-            self.idle = False
-            self.t = 0
-            self.initial_t = pg.time.get_ticks() / 1000  # initial_t
-            self.angle = angle
-            self.v0 = (time_held / 2 * 500)  # v0 = inital speed
+    def shoot(self, time_held, angle):
+        self.idle = False
+        self.t = 0
+        self.initial_t = pg.time.get_ticks() / 1000  # initial_t
+        self.angle = angle
+        self.v0 = (time_held / 2 * 500)  # v0 = inital speed
 
-        def update_position(self):
-            # V0 = (t/tmax) * vmaxspeed
-            if self.initial_t != 0:
-                print("hello")
-                self.t = (pg.time.get_ticks() / 1000) - self.initial_t
-                x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
-                y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
-                self.rect.center = (x, y)
-                self.timer -= 1
-                if self.timer <= 0:
-                    self.explode()
+    def update_position(self):
+        # V0 = (t/tmax) * vmaxspeed
+        if self.initial_t != 0:
+            self.t = (pg.time.get_ticks() / 1000) - self.initial_t
+            x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
+            y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
+            self.rect.center = (x, y)
+            self.timer -= 1
+            if self.timer <= 0:
+                self.explode()
 
 
 class Rocket(Ballistic):
+
     def __init__(self, position, drag, v0):
         Ballistic.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Bomb.png"),
                                                   (0, 0, 16, 16), 4, 15), position, drag, 500, physic["ROCKET_MASS"])
