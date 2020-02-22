@@ -1,10 +1,13 @@
 import pygame as pg
-
-from Application.Core.Utilities import path_asset, Spritesheet
+import os
+from yaml import load, SafeLoader
+from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
 from math import cos, sin, pi
 
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
+inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Inputs"]
 
 
 class Weapon(pg.sprite.Sprite):
@@ -29,6 +32,7 @@ class Weapon(pg.sprite.Sprite):
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
+        self.exploded = False
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of weapon
@@ -37,14 +41,16 @@ class Weapon(pg.sprite.Sprite):
     def update(self):
         self.update_position()
 
-    def update_position(self): return
+    def draw(self, screen):
+        if not self.exploded:
+            screen.blit(self.image, self.rect.center)
+
+    def update_position(self):
+        return
 
     def update_idle_postion(self, position):
         if self.idle:
-            self.rect.center = (position[0] + 10, position[1] - 10)
-
-    def draw(self, screen):
-        screen.blit(self.image, self.rect.center)
+            self.rect.center = (position[0], position[1])
 
 
 class Frag(Weapon):
@@ -52,7 +58,8 @@ class Frag(Weapon):
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
                                                (0, 0, 16, 16), 1, 15), position, drag, 500)
-        self.rect.center = (self.pos_initial[0] + 10, self.pos_initial[1] - 10)
+        self.rect.center = (self.pos_initial[0] , self.pos_initial[1] )
+        self.timer = 50
 
     def shoot(self, time_held, angle):
         self.idle = False
@@ -64,19 +71,23 @@ class Frag(Weapon):
 
     def update_position(self):
         # V0 = (t/tmax) * vmaxspeed
-
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
             self.rect.center = (x, y)
-            self.explode()
+            self.timer -= 1
+            if self.timer <= 0:
+                self.explode()
 
     def explode(self):
-        if len(self.collided_objects) > 1 :
+        if self.collided_objects:
             for o in self.collided_objects:
-                if isinstance(o, Ground):
+                if isinstance(o, Ground) and not self.exploded:
                     o.update_mask(50, self.rect.center)
+                elif not o.__eq__(self):
+                    o.hurt(50, get_mask_collision_normal(o, self))
+            self.exploded = True
 
 
 class Bazooka(Weapon):
@@ -113,14 +124,14 @@ class Target(pg.sprite.Sprite):
         if not self.is_active:
             angle = self.angle
             keys = pg.key.get_pressed()
-            if keys[pg.K_UP]:
+            if keys[inputs["AIM_UP"]]:
                 angle += 0.1
-            if keys[pg.K_DOWN]:
+            if keys[inputs["AIM_DOWN"]]:
                 angle -= 0.1
-            if keys[pg.K_a] and self._flip:
+            if keys[inputs["MOVE_LEFT"]] and self._flip:
                 self._flip = False
                 self.swap_angle()
-            if keys[pg.K_d] and not self._flip:
+            if keys[inputs["MOVE_RIGHT"]] and not self._flip:
                 self._flip = True
                 self.swap_angle()
 
