@@ -1,15 +1,15 @@
 import pygame as pg
 import os
 from yaml import load, SafeLoader
-from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
+from Application.Core.Utilities import path_asset, Spritesheet
 from Application.Environnement.Terrain import Ground
 from Application.Entities.Characters import Worms
 from math import cos, sin, pi
 
+
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Inputs"]
-
 
 class Weapon(pg.sprite.Sprite):
     # gravity = 9.81
