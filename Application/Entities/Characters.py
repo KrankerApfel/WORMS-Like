@@ -10,6 +10,8 @@ physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'
     "Physic"]
 param = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Parameters"]
+inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Inputs"]
 
 
 class Player:
@@ -35,15 +37,16 @@ class Player:
         # self.target.rect.center = self._current_worms.position
         # self.target.update()
         keys = pg.key.get_pressed()
-        if keys[pg.K_a]:
+
+        if keys[inputs["MOVE_LEFT"]]:
             self._current_worms.set_direction(-1)
-        if keys[pg.K_d]:
+        if keys[inputs["MOVE_RIGHT"]]:
             self._current_worms.set_direction(1)
-        if keys[pg.K_w]:
+        if keys[inputs["JUMP"]]:
             self._current_worms.jump()
 
-        self._current_worms._play_idling_animation = not (keys[pg.K_LEFT] or keys[pg.K_RIGHT])
-        self._current_worms._play_walking_animation = keys[pg.K_LEFT] or keys[pg.K_RIGHT]
+        self._current_worms._play_idling_animation = not (keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]])
+        self._current_worms._play_walking_animation = keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]]
 
     def loose(self):
         return len(self.worms) == 0
