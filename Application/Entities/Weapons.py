@@ -62,7 +62,6 @@ class Frag(Weapon):
         self.timer = 50
 
     def shoot(self, time_held, angle):
-        print(str(time_held), str(angle))
         self.idle = False
 
         self.t = 0

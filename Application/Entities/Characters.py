@@ -50,8 +50,6 @@ class Player:
         self._target = None
 
     def events(self):
-        # self.target.rect.center = self._current_worms.position
-        # self.target.update()
         keys = pg.key.get_pressed()
 
         if keys[inputs["MOVE_LEFT"]]:
@@ -69,10 +67,8 @@ class Player:
         if keys[pg.K_2]:
             self.weapon = Bazooka(self._current_worms.position, 0, 5)
         self.shooting_logic(keys)
-
-    def update(self):
         if self.weapon:
-            self.weapon.update_idle_postion(self._current_worm.position)
+            self.weapon.update_idle_postion(self._current_worms.position)
 
     def loose(self):
         return len(self.worms) == 0
@@ -83,16 +79,11 @@ class Player:
 
     def shooting_logic(self, keys):
         if self.can_shoot:  # if in game state to shoot
-            if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
-                self.is_shooting = True
-                self.getting_time = True
-                self.end_shooting = False
-
-                # wait for shoot to end and reset timer and change player
-            if keys[pg.K_SPACE] and self.getting_time:  # get the time once at the moment you start pressing spcae aka keydown
-                self.start_shooting_time = pg.time.get_ticks()
-                self.getting_time = False
-                  #print("step 1" + str( self.shooting_time))
+            if self.can_shoot:  # if in game state to shoot
+                if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
+                    self.is_shooting = True
+                    self.start_shooting_time = pg.time.get_ticks()
+                    self.end_shooting = False
 
             if not keys[pg.K_SPACE] and self.is_shooting:  # if the space key is not pressed and was pressed before
                 if self.weapon is not None:
@@ -100,14 +91,12 @@ class Player:
                     self.can_shoot = False
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                     self.start_shooting_time = 0
-                    #print("step 2"+ str( self.shooting_time))
 
                 self.end_shooting = True
                 self.is_shooting = False
 
             if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (
                     pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
-                #print("step 3")
                 if self.weapon is not None:
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
