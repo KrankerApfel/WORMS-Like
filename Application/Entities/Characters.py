@@ -2,6 +2,7 @@ import pygame as pg
 from yaml import load, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
+from Application.Entities.Weapons import Frag, Bazooka
 from random import randrange
 import os
 
@@ -26,15 +27,29 @@ class Player:
     def worms(self):
         return self._worms
 
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, value):
+        self._target = value
+
     def __init__(self, name, nb_worms):
         self.name = name
         self.score = 0
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
         self._current_worms = self.worms[0]
+        self.weapon = None
+        self.can_move = False
+        self.is_shooting = False
+        self.end_shooting = True
+        self.can_shoot = True
+        self.start_shooting_time = 0
+        self.shooting_time = 0
+        self._target = None
 
     def events(self):
-        # self.target.rect.center = self._current_worms.position
-        # self.target.update()
         keys = pg.key.get_pressed()
 
         if keys[inputs["MOVE_LEFT"]]:
@@ -47,12 +62,50 @@ class Player:
         self._current_worms._play_idling_animation = not (keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]])
         self._current_worms._play_walking_animation = keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]]
 
+        if keys[pg.K_1]:
+            self.weapon = Frag(self._current_worms.position, 0, 5)
+        if keys[pg.K_2]:
+            self.weapon = Bazooka(self._current_worms.position, 0, 5)
+        self.shooting_logic(keys)
+        if self.weapon:
+            self.weapon.update_idle_postion(self._current_worms.position)
+
     def loose(self):
         return len(self.worms) == 0
 
     @property
     def current_worms(self):
         return self._current_worms
+
+    def shooting_logic(self, keys):
+        if self.can_shoot:  # if in game state to shoot
+            if self.can_shoot:  # if in game state to shoot
+                if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
+                    self.is_shooting = True
+                    self.start_shooting_time = pg.time.get_ticks()
+                    self.end_shooting = False
+
+            if not keys[pg.K_SPACE] and self.is_shooting:  # if the space key is not pressed and was pressed before
+                if self.weapon is not None:
+                    self.shooting_time = pg.time.get_ticks()
+                    self.can_shoot = False
+                    self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
+                    self.start_shooting_time = 0
+
+                self.end_shooting = True
+                self.is_shooting = False
+
+            if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (
+                    pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
+                if self.weapon is not None:
+                    self.shooting_time = pg.time.get_ticks()
+                    self.can_shoot = False
+                    self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
+                    self.start_shooting_time = 0
+                self.is_shooting = False
+                self.end_shooting = True
+        if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5:  # if it has been 5 second, can start shooting again
+            self.can_shoot = True
 
 
 class Worms(pg.sprite.Sprite):
