@@ -1,7 +1,7 @@
 import pygame as pg
 import os
 from yaml import load, SafeLoader
-from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
+from Application.Core.Utilities import path_asset, Spritesheet
 from Application.Environnement.Terrain import Ground
 from Application.Entities.Characters import Worms
 from math import cos, sin, pi
