@@ -14,13 +14,13 @@ Parameters :
   MAX_SCORE : 1000
 
 Inputs :
-  CHANGE_WEAPONS : !!str "K_RSHIFT"
-  SHOOT : !!str "pg.K_SPACE"
-  JUMP : !!str "pg.K_a"
-  MOVE_LEFT : !!str "pg.K_LEFT"
-  MOVE_RIGHT : !!str "pg.K_RIGHT"
-  AIM_UP : !!str "pg.K_UP"
-  AIM_DOWN : !!str "pg.K_DOWN"
+  CHANGE_WEAPONS : !!int 303
+  SHOOT : !!int 32
+  JUMP : !!int 119
+  MOVE_LEFT : !!int 97
+  MOVE_RIGHT : !!int 100
+  AIM_UP : !!int 273
+  AIM_DOWN : !!int 274
 
 Physic:
   GRAVITY : !!float 0.8

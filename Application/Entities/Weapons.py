@@ -1,10 +1,14 @@
 import pygame as pg
-
-from Application.Core.Utilities import path_asset, Spritesheet
+import os
+from yaml import load, SafeLoader
+from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
+from Application.Entities.Characters import Worms
 from math import cos, sin, pi
 
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
+inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Inputs"]
 
 
 class Weapon(pg.sprite.Sprite):
@@ -73,10 +77,12 @@ class Frag(Weapon):
             self.explode()
 
     def explode(self):
-        if len(self.collided_objects) > 1 :
+        if len(self.collided_objects) > 1:
             for o in self.collided_objects:
                 if isinstance(o, Ground):
                     o.update_mask(50, self.rect.center)
+                elif isinstance(o, Worms) and not o.__eq__(self):
+                    o.hurt(50, get_mask_collision_normal(o, self))
 
 
 class Bazooka(Weapon):
@@ -113,14 +119,14 @@ class Target(pg.sprite.Sprite):
         if not self.is_active:
             angle = self.angle
             keys = pg.key.get_pressed()
-            if keys[pg.K_UP]:
+            if keys[inputs["AIM_UP"]]:
                 angle += 0.1
-            if keys[pg.K_DOWN]:
+            if keys[inputs["AIM_DOWN"]]:
                 angle -= 0.1
-            if keys[pg.K_a] and self._flip:
+            if keys[inputs["MOVE_LEFT"]] and self._flip:
                 self._flip = False
                 self.swap_angle()
-            if keys[pg.K_d] and not self._flip:
+            if keys[inputs["MOVE_RIGHT"]] and not self._flip:
                 self._flip = True
                 self.swap_angle()
 
