@@ -16,7 +16,6 @@ class Match:
     count = 0
     is_shooting = False
     start_shooting_time = 0
-    getting_time = False
     end_shooting = True
     _can_shoot = True
     _can_move = True
@@ -78,17 +77,11 @@ class Match:
         if keys[pg.K_2]:
             self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
 
-
-        if self.can_shoot:  #if in game state to shoot
-            if keys[pg.K_SPACE] and self.end_shooting: #if started pressing space
+        if self.can_shoot:  # if in game state to shoot
+            if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
                 self.is_shooting = True
-                self.getting_time = True
-                self.end_shooting = False
-
-                # wait for shoot to end and reset timer and change player
-            if keys[pg.K_SPACE] and self.getting_time: #get the time once at the moment you start pressing spcae aka keydown
                 self.start_shooting_time = pg.time.get_ticks()
-                self.getting_time = False
+                self.end_shooting = False
 
             if not keys[pg.K_SPACE] and self.is_shooting: #if the space key is not pressed and was pressed before
                 if self.weapon is not None:
@@ -117,7 +110,7 @@ class Match:
         self.worms_group.draw(screen)
         self.target.draw(screen)
         if self.weapon:
-            self.weapon.draw(screen)
+                self.weapon.draw(screen)
 
     def check_loose(self):
         for p in self.players:
