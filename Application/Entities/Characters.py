@@ -7,9 +7,10 @@ import os
 from Application.Entities.Weapons import Frag, Bazooka
 
 physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
-            "Physic"]
+    "Physic"]
 param = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
-            "Parameters"]
+    "Parameters"]
+
 
 class Player:
 
@@ -80,6 +81,8 @@ class Worms(pg.sprite.Sprite):
         self._play_idling_animation = True
         self._play_walking_animation = False
         self._is_jumping = False
+        self.is_die = False
+        self.die_timer = 100
         self._flip = False
         self.mask = pg.mask.from_surface(self.image)
 
@@ -89,14 +92,18 @@ class Worms(pg.sprite.Sprite):
         self.update_animation()
 
     def update_animation(self):
-        if self._play_idling_animation:
-            self.image = self._spritesheet_idle.animate()
-        elif self._play_walking_animation:
-            self.image = self._spritesheet_walk.animate()
-        elif self._play_jump_animation:
-            self.image = self._spritesheet_jump.animate()
+        if not self.is_die:
+            if self._play_idling_animation:
+                self.image = self._spritesheet_idle.animate()
+            elif self._play_walking_animation:
+                self.image = self._spritesheet_walk.animate()
+            elif self._play_jump_animation:
+                self.image = self._spritesheet_jump.animate()
         elif self._play_dying_animation:
             self.image = self._spritesheet_dead.animate()
+            self.die_timer -= 1
+            if self.die_timer <= 0:
+                self.kill()
 
         self.image = pg.transform.flip(self.image, self._flip, False)
 
@@ -125,7 +132,7 @@ class Worms(pg.sprite.Sprite):
             for o in self.collided_objects:
                 if not o == self:
 
-                    p = get_mask_collision_normal(self,o)
+                    p = get_mask_collision_normal(self, o)
                     if p[0]:
                         self.velocity.x = self.acceleration.x = 0
 
@@ -153,4 +160,10 @@ class Worms(pg.sprite.Sprite):
     def die(self):
         self._play_walking_animation = self._play_idling_animation = self._play_jump_animation = False
         self._play_dying_animation = True
+        self.is_die = True
 
+    def hurt(self, damage, direction):
+        self.life -= damage
+        self.velocity += pg.math.Vector2(direction[0], direction[1])
+        if self.life <= 0:
+            self.die()
