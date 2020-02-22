@@ -16,8 +16,10 @@ class Weapon(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
+        self.mask = pg.mask.from_surface(self.image)
         self.rect.center = (0, 0)
         self.pos_initial = position
+        self.collided_objects = []
         self.velocity = pg.math.Vector2(0, 0)
         self.acceleration = pg.math.Vector2(0, 0)
         self.drag = drag
