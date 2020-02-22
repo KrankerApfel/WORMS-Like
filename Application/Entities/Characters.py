@@ -14,6 +14,7 @@ param = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r')
 
 class Player:
 
+    # change current worm
     @property
     def current_worm(self):
         self._current_worms = self.worms.pop(0)

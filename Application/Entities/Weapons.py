@@ -1,57 +1,97 @@
 import pygame as pg
-from Application.Core.Utilities import path_asset
+
+from Application.Core.Utilities import path_asset, Spritesheet
+from Application.Environnement.Terrain import Ground
 from math import cos, sin, pi
 
-frag = pg.image.load(path_asset("Graphics\\Spritesheets\\Grenade.png"))
-bazooka = pg.image.load(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"))
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 
 
 class Weapon(pg.sprite.Sprite):
+    # gravity = 9.81
+    gravity = 500
 
-    def __init__(self, damage, image, position, drag, speed, gravity):
+    def __init__(self, damage, spritesheet, position, drag, v0):
         pg.sprite.Sprite.__init__(self)
-        self.image = image
+        self.image = spritesheet.frame_images[0]
         self.rect = self.image.get_rect()
-        self.rect.center = position
+        self.rect.center = (0, 0)
+        self.pos_initial = position
         self.velocity = pg.math.Vector2(0, 0)
         self.acceleration = pg.math.Vector2(0, 0)
         self.drag = drag
-        self.speed = speed
-        self.gravity = gravity
+        self.v0 = v0
+        self.angle = 0
         self.is_colliding = False
         self.damage = damage
+        self.t = 0
+        self.initial_t = 0
+        self.idle = True
+        self.mask = pg.mask.from_surface(self.image)
+        self.collided_objects = []
 
-    def shoot(self):
+    def shoot(self, initial_t, angle):
         # calculate angle and physic of weapon
         print("printing from weapon")
 
-    def events(self):
-        # equation de cercle pour que le visuer tourne autour du joeuur
-        keys = pg.key.get_pressed()
-
     def update(self):
-        self.events()
+        self.update_position()
+
+    def update_position(self): return
+
+    def update_idle_postion(self, position):
+        if self.idle:
+            self.rect.center = (position[0] + 10, position[1] - 10)
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.center)
 
 
 class Frag(Weapon):
 
-    def __init__(self, damage, position, drag, speed, gravity):
-        Weapon.__init__(self, damage, frag, position, drag, speed, gravity)
+    def __init__(self, position, drag, v0):
+        Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
+                                               (0, 0, 16, 16), 1, 15), position, drag, 500)
+        self.rect.center = (self.pos_initial[0] + 10, self.pos_initial[1] - 10)
 
-    def shoot(self):
-        # calculate angle and physic of frag
-        print("printing from frag")
+    def shoot(self, time_held, angle):
+        self.idle = False
+
+        self.t = 0
+        self.initial_t = pg.time.get_ticks() / 1000  # initial_t
+        self.angle = angle
+        self.v0 = (time_held / 2 * 500)  # v0 = inital speed
+
+    def update_position(self):
+        # V0 = (t/tmax) * vmaxspeed
+
+        if self.initial_t != 0:
+            self.t = (pg.time.get_ticks() / 1000) - self.initial_t
+            x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
+            y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
+            self.rect.center = (x, y)
+            self.explode()
+
+    def explode(self):
+        if len(self.collided_objects) > 1 :
+            for o in self.collided_objects:
+                if isinstance(o, Ground):
+                    o.update_mask(50, self.rect.center)
 
 
 class Bazooka(Weapon):
 
-    def __init__(self, damage, position, drag, speed, gravity):
-        Weapon.__init__(self, damage, bazooka, position, drag, speed, gravity)
+    def __init__(self, position, drag, v0):
+        Weapon.__init__(self, 50, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
+                                              (0, 0, 16, 16), 1, 15), position, drag, v0, 500)
 
-    def shoot(self):
+    def shoot(self, initial_t, angle):
         # calculate angle and physic of bazooka and call specific sprite
         print("printing from frag")
+
+    def update_position(self):
+        # TODO
+        return
 
 
 class Target(pg.sprite.Sprite):
@@ -83,9 +123,6 @@ class Target(pg.sprite.Sprite):
             if keys[pg.K_d] and not self._flip:
                 self._flip = True
                 self.swap_angle()
-
-            if keys[pg.K_SPACE]:
-                self.shoot()
 
             self.aim(angle)
         else:
