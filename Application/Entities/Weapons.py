@@ -62,6 +62,7 @@ class Frag(Weapon):
         self.timer = 50
 
     def shoot(self, time_held, angle):
+        print(str(time_held), str(angle))
         self.idle = False
 
         self.t = 0
@@ -71,13 +72,12 @@ class Frag(Weapon):
 
     def update_position(self):
         # V0 = (t/tmax) * vmaxspeed
-
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
             self.rect.center = (x, y)
-            self.timer -=1
+            self.timer -= 1
             if self.timer <= 0:
                 self.explode()
 

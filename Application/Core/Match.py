@@ -35,7 +35,6 @@ class Match:
         self.all_sprites_group = pg.sprite.Group(self.level["ground"])
         self.target = Target()
         self.targetPosition = (0, 0)
-        self.weapon = None
         for player in self.players:
             # self.targets_group.add(player.target)
             for worm in player.worms:
@@ -46,9 +45,9 @@ class Match:
         self.events()
         self.worms_group.update()
         self.target.update()
-        if self.weapon:
-            self.weapon.update()
-            self.weapon.collided_objects = pg.sprite.spritecollide(self.weapon, self.all_sprites_group, False, pg.sprite.collide_mask)
+        if self.current_player.weapon:
+            self.current_player.weapon.update()
+            self.current_player.weapon.collided_objects = pg.sprite.spritecollide(self.current_player.weapon, self.all_sprites_group, False, pg.sprite.collide_mask)
         # self.targets_group.update()
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
@@ -69,6 +68,7 @@ class Match:
     def events(self):
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
+        self.current_player.target = self.target
       #  if self.weapon:
          #   self.weapon.update_idle_postion(self.current_player.current_worm.position)
        # keys = pg.key.get_pressed()
