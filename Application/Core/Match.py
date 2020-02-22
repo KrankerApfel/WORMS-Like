@@ -49,6 +49,7 @@ class Match:
         self.target.update()
         if self.weapon:
             self.weapon.update()
+            self.weapon.collided_objects = pg.sprite.spritecollide(self.weapon, self.all_sprites_group, False, pg.sprite.collide_mask)
         # self.targets_group.update()
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)

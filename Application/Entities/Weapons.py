@@ -1,7 +1,9 @@
 import pygame as pg
 
-from Application.Core.Utilities import path_asset,Spritesheet
+from Application.Core.Utilities import path_asset, Spritesheet
+from Application.Environnement.Terrain import Ground
 from math import cos, sin, pi
+
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 
 
@@ -26,6 +28,7 @@ class Weapon(pg.sprite.Sprite):
         self.initial_t = 0
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
+        self.collided_objects = []
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of weapon
@@ -38,7 +41,7 @@ class Weapon(pg.sprite.Sprite):
 
     def update_idle_postion(self, position):
         if self.idle:
-            self.rect.center = (position[0], position[1])
+            self.rect.center = (position[0] + 10, position[1] - 10)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.center)
@@ -48,8 +51,8 @@ class Frag(Weapon):
 
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
-                                             (0, 0, 16, 16), 1, 15), position, drag, 500)
-        self.rect.center = (self.pos_initial[0], self.pos_initial[1])
+                                               (0, 0, 16, 16), 1, 15), position, drag, 500)
+        self.rect.center = (self.pos_initial[0] + 10, self.pos_initial[1] - 10)
 
     def shoot(self, time_held, angle):
         self.idle = False
@@ -67,13 +70,20 @@ class Frag(Weapon):
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
             self.rect.center = (x, y)
+            self.explode()
+
+    def explode(self):
+        if len(self.collided_objects) > 1 :
+            for o in self.collided_objects:
+                if isinstance(o, Ground):
+                    o.update_mask(50, self.rect.center)
 
 
 class Bazooka(Weapon):
 
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 50, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
-                                             (0, 0, 16, 16), 1, 15) , position, drag, v0, 500)
+                                              (0, 0, 16, 16), 1, 15), position, drag, v0, 500)
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of bazooka and call specific sprite
