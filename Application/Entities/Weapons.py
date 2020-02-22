@@ -6,9 +6,12 @@ from Application.Environnement.Terrain import Ground
 from Application.Entities.Characters import Worms
 from math import cos, sin, pi
 
+<<<<<<< HEAD
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
 inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Inputs"]
+=======
+>>>>>>> slave
 
 
 class Weapon(pg.sprite.Sprite):
