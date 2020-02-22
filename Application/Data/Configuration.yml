@@ -14,7 +14,7 @@ Parameters :
   MAX_SCORE : 1000
 
 Inputs :
-  CHANGE_WEAPONS : !!int 303
+  CHANGE_WEAPONS : !!int 304
   SHOOT : !!int 32
   JUMP : !!int 119
   MOVE_LEFT : !!int 97
@@ -23,8 +23,11 @@ Inputs :
   AIM_DOWN : !!int 274
 
 Physic:
-  GRAVITY : !!float 0.8
+  GRAVITY : !!float 9.81
   GROUND_BOUNCING_FACTOR : !!float 2
   WORMS_DRAG : !!float -0.5
   WORMS_SPEED : !!int 1
   WORMS_JUMP_FORCE : !!int 10
+  WORMS_MASS : !!float 0.081
+  FRAG_MASS : !!float 50.96
+  ROCKET_MASS : !!float 50.96

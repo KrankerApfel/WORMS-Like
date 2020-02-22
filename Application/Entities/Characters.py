@@ -2,7 +2,7 @@ import pygame as pg
 from yaml import load, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
-from Application.Entities.Weapons import Frag, Bazooka
+from Application.Entities.Weapons import Frag, Bazooka, HandWithFrag
 from random import randrange
 import os
 
@@ -41,6 +41,8 @@ class Player:
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
         self._current_worms = self.worms[0]
         self.weapon = None
+        self.weapon_index = 0
+        self.inventory = ["Frag", "Bazooka", None]
         self.can_move = False
         self.is_shooting = False
         self.end_shooting = True
@@ -51,7 +53,6 @@ class Player:
 
     def events(self):
         keys = pg.key.get_pressed()
-
         if keys[inputs["MOVE_LEFT"]]:
             self._current_worms.set_direction(-1)
         if keys[inputs["MOVE_RIGHT"]]:
@@ -62,13 +63,20 @@ class Player:
         self._current_worms._play_idling_animation = not (keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]])
         self._current_worms._play_walking_animation = keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]]
 
-        if keys[pg.K_1]:
-            self.weapon = Frag(self._current_worms.position, 0, 5)
-        if keys[pg.K_2]:
-            self.weapon = Bazooka(self._current_worms.position, 0, 5)
+        if keys[inputs["CHANGE_WEAPONS"]]:
+            self.weapon_index = (self.weapon_index+1)%len(self.inventory)
+            if self.inventory[self.weapon_index].__eq__("Frag"):
+                self.weapon = None
+                self.weapon = HandWithFrag(self._current_worms.rect.center)
+            elif self.inventory[self.weapon_index].__eq__("Bazooka"):
+                self.weapon = None
+                self.weapon = Bazooka(self._current_worms.rect.center, 0, 5)
+            else :
+                self.weapon = None
+
         self.shooting_logic(keys)
         if self.weapon:
-            self.weapon.update_idle_postion(self._current_worms.position)
+            self.weapon.update_idle_position(self._current_worms.position, self.target.angle, self._current_worms.rect.center)
 
     def loose(self):
         return len(self.worms) == 0
@@ -80,12 +88,12 @@ class Player:
     def shooting_logic(self, keys):
         if self.can_shoot:  # if in game state to shoot
             if self.can_shoot:  # if in game state to shoot
-                if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
+                if keys[inputs["SHOOT"]] and self.end_shooting:  # if started pressing space
                     self.is_shooting = True
                     self.start_shooting_time = pg.time.get_ticks()
                     self.end_shooting = False
 
-            if not keys[pg.K_SPACE] and self.is_shooting:  # if the space key is not pressed and was pressed before
+            if not keys[inputs["SHOOT"]] and self.is_shooting:  # if the space key is not pressed and was pressed before
                 if self.weapon is not None:
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
@@ -95,7 +103,7 @@ class Player:
                 self.end_shooting = True
                 self.is_shooting = False
 
-            if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (
+            if keys[inputs["SHOOT"]] and self.start_shooting_time != 0 and (
                     pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
                 if self.weapon is not None:
                     self.shooting_time = pg.time.get_ticks()
@@ -129,7 +137,7 @@ class Worms(pg.sprite.Sprite):
         self.acceleration = pg.math.Vector2(0, 0)
         self.drag = physic["WORMS_DRAG"]
         self.speed = physic["WORMS_SPEED"]
-        self.gravity = physic["GRAVITY"]
+        self.gravity = physic["GRAVITY"]*physic["WORMS_MASS"]
         self.jump_force = physic["WORMS_JUMP_FORCE"]
         self.collided_objects = []
         self._play_jump_animation = False
