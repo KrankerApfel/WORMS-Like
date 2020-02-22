@@ -20,13 +20,16 @@ pip install pygame
 pip install PyYAML
 ````
 ##User guide
+
 ###Launch
+
 To launch the project, execute Main.py with your IDE or type the following command in the main directory :
 ````
 python ./main.py
 ````
 
 ###Play
+
 You can choose the number of players and worms per player by right/left clicking on menu buttons. For the moment, there
 a bug when you play with more than one worms per player.
 
