@@ -3,7 +3,6 @@ import os
 from yaml import load, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
-from Application.Entities.Characters import Worms
 from math import cos, sin, pi
 
 target = pg.image.load(path_asset("Graphics\\Spritesheets\\Target.png"))
@@ -87,7 +86,7 @@ class Frag(Weapon):
             for o in self.collided_objects:
                 if isinstance(o, Ground) and not self.exploded:
                     o.update_mask(50, self.rect.center)
-                elif isinstance(o, Worms) and not o.__eq__(self):
+                elif not o.__eq__(self):
                     o.hurt(50, get_mask_collision_normal(o, self))
             self.exploded = True
 

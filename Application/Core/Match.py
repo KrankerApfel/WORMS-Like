@@ -69,48 +69,48 @@ class Match:
     def events(self):
         self.current_player.events()
         self.target.player_position = self.current_player.current_worm.rect
-        if self.weapon:
-            self.weapon.update_idle_postion(self.current_player.current_worm.position)
-        keys = pg.key.get_pressed()
-        if keys[pg.K_1]:
-            self.weapon = Frag(self.current_player.current_worm.position, 0, 5)
-        if keys[pg.K_2]:
-            self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
+      #  if self.weapon:
+         #   self.weapon.update_idle_postion(self.current_player.current_worm.position)
+       # keys = pg.key.get_pressed()
+      #  if keys[pg.K_1]:
+       #     self.weapon = Frag(self.current_player.current_worm.position, 0, 5)
+       # if keys[pg.K_2]:
+        #    self.weapon = Bazooka(self.current_player.current_worm.position, 0, 5)
 
-        if self.can_shoot:  # if in game state to shoot
-            if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
-                self.is_shooting = True
-                self.start_shooting_time = pg.time.get_ticks()
-                self.end_shooting = False
+        #if self.can_shoot:  # if in game state to shoot
+        #    if keys[pg.K_SPACE] and self.end_shooting:  # if started pressing space
+          #      self.is_shooting = True
+          #      self.start_shooting_time = pg.time.get_ticks()
+          #      self.end_shooting = False
 
-            if not keys[pg.K_SPACE] and self.is_shooting: #if the space key is not pressed and was pressed before
-                if self.weapon is not None:
-                    self.shooting_time = pg.time.get_ticks()
-                    self.can_shoot = False
-                    self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time)/1000, self.target.angle)
-                    self.start_shooting_time = 0
+         #   if not keys[pg.K_SPACE] and self.is_shooting: #if the space key is not pressed and was pressed before
+          #      if self.weapon is not None:
+               #     self.shooting_time = pg.time.get_ticks()
+              #      self.can_shoot = False
+              #      self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time)/1000, self.target.angle)
+              #      self.start_shooting_time = 0
 
-                self.end_shooting = True
-                self.is_shooting = False
+              #  self.end_shooting = True
+             #   self.is_shooting = False
 
-            if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (pg.time.get_ticks() - self.start_shooting_time)/1000 > 2: #if holding space and its been more than 2 seconds shoot
-                if self.weapon is not None:
-                    self.shooting_time = pg.time.get_ticks()
-                    self.can_shoot = False
-                    self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
-                    self.start_shooting_time = 0
-                self.is_shooting = False
-                self.end_shooting = True
-        if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5: #if it has been 5 second, can start shooting again 
-            self.can_shoot = True
+         #   if keys[pg.K_SPACE] and self.start_shooting_time != 0 and (pg.time.get_ticks() - self.start_shooting_time)/1000 > 2: #if holding space and its been more than 2 seconds shoot
+              #  if self.weapon is not None:
+              #      self.shooting_time = pg.time.get_ticks()
+            #        self.can_shoot = False
+            #        self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
+            #        self.start_shooting_time = 0
+           #     self.is_shooting = False
+           #    self.end_shooting = True
+       #if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5: #if it has been 5 second, can start shooting again
+          #  self.can_shoot = True
             # self.target._flip = self.current_player.current_worm.flip
 
     def draw(self, screen):
         self.level["ground"].draw(screen)
         self.worms_group.draw(screen)
         self.target.draw(screen)
-        if self.weapon:
-                self.weapon.draw(screen)
+        if self.current_player.weapon:
+            self.current_player.weapon.draw(screen)
 
     def check_loose(self):
         for p in self.players:

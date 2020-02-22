@@ -2,6 +2,7 @@ import pygame as pg
 from yaml import load, SafeLoader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
+from Application.Entities.Weapons import Frag, Bazooka
 from random import randrange
 import os
 
@@ -31,6 +32,7 @@ class Player:
         self.score = 0
         self._worms = [Worms(name + str(i)) for i in range(nb_worms)]
         self._current_worms = self.worms[0]
+        self.weapon = None
 
     def events(self):
         # self.target.rect.center = self._current_worms.position
@@ -46,6 +48,15 @@ class Player:
 
         self._current_worms._play_idling_animation = not (keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]])
         self._current_worms._play_walking_animation = keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]]
+
+        if keys[pg.K_1]:
+            self.weapon = Frag(self._current_worms.position, 0, 5)
+        if keys[pg.K_2]:
+            self.weapon = Bazooka(self._current_worms.position, 0, 5)
+
+    def update(self):
+        if self.weapon:
+            self.weapon.update_idle_postion(self._current_worm.position)
 
     def loose(self):
         return len(self.worms) == 0
