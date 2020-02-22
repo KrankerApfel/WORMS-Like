@@ -63,7 +63,6 @@ class Frag(Weapon):
 
     def shoot(self, time_held, angle):
         self.idle = False
-
         self.t = 0
         self.initial_t = pg.time.get_ticks() / 1000  # initial_t
         self.angle = angle
@@ -94,7 +93,7 @@ class Bazooka(Weapon):
 
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, 50, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
-                                              (0, 0, 16, 16), 1, 15), position, drag, v0, 500)
+                                              (0, 0, 16, 16), 1, 15), position, drag, v0)
 
     def shoot(self, initial_t, angle):
         # calculate angle and physic of bazooka and call specific sprite

@@ -14,7 +14,7 @@ Parameters :
   MAX_SCORE : 1000
 
 Inputs :
-  CHANGE_WEAPONS : !!int 303
+  CHANGE_WEAPONS : !!int 304
   SHOOT : !!int 32
   JUMP : !!int 119
   MOVE_LEFT : !!int 97
