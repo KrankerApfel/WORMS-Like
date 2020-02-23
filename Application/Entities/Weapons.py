@@ -1,7 +1,7 @@
 import pygame as pg
 import os
 from yaml import load, SafeLoader
-from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
+from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal, compute_velocity_after_bounce
 from Application.Environnement.Terrain import Ground
 from math import cos, sin, pi
 
@@ -117,7 +117,7 @@ class Frag(Ballistic):
         Ballistic.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Grenade.png"),
                                                   (0, 0, 16, 16), 1, 15), position, drag, 500, physic["FRAG_MASS"])
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
-        self.timer = 50
+        self.timer = 500
 
     def shoot(self, time_held, angle):
         self.idle = False
@@ -127,15 +127,28 @@ class Frag(Ballistic):
         self.v0 = (time_held / 2 * 500)  # v0 = inital speed
 
     def update_position(self):
-        # V0 = (t/tmax) * vmaxspeed
+
         if self.initial_t != 0:
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t
+            self.velocity = pg.math.Vector2(self.pos_initial[0] + self.v0 * cos(self.angle) * self.t,
+                                            self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle))
             self.rect.center = (x, y)
+            self.bounce()
             self.timer -= 1
             if self.timer <= 0:
                 self.explode()
+
+    def bounce(self):
+        if self.collided_objects:
+            for o in self.collided_objects:
+                plane_normal = get_mask_collision_normal(self, o)
+                if not plane_normal[0] or not plane_normal[1] : return
+                new_velocity = compute_velocity_after_bounce(self.velocity, plane_normal, 1)# type : pg.Math.Vector2
+                print(new_velocity)
+                self.v0 = new_velocity.magnitude()
+                print(o)
 
 
 class Rocket(Ballistic):

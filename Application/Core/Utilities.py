@@ -1,5 +1,7 @@
 import pygame as pg
 import os
+import math
+
 
 # --- OS compatibility function --
 def path_asset(path):
@@ -198,7 +200,7 @@ def get_mask_collision_normal(a, b):
     :param b: penetrated sprite with a mask collider and a rect
     :return:
     """
-    offset = list(map(int, pg.Vector2(b.rect[0]+5, b.rect[1]+5)-pg.Vector2(a.rect[0],a.rect[1])))
+    offset = list(map(int, pg.Vector2(b.rect[0] + 5, b.rect[1] + 5) - pg.Vector2(a.rect[0], a.rect[1])))
     overlap_area = a.mask.overlap_area(b.mask, offset)
 
     # no collision detected
@@ -212,4 +214,30 @@ def get_mask_collision_normal(a, b):
     return nx, ny
 
 
+def dot(u, v):
+    """
+    Dot product between u and v. Vectors are represented by tuple
+    :param u: vector u
+    :param v:  vector v
+    :return: scalar/dot product u.v
+    """
+    return sum(ui * vi for ui, vi in zip(u, v))
 
+
+def compute_velocity_after_bounce(a, b, k):
+    """
+    Made with indication on this web page http://www.3dkingdoms.com/weekly/weekly.php?a=2
+    :param a: incident vector
+    :param b: plane normal
+    :param k: coefficient of restitution
+    :return: outtgoing vector after a bounce.
+    """
+    normalize(b)
+    v = pg.math.Vector2(a[0], a[1])
+    n = pg.math.Vector2(b[0], b[1])
+    return k * (-2 * v.dot(n) * n + v)
+
+
+def normalize(v):
+    magnitude = math.sqrt(v[0] * v[0] + v[1] * v[1])
+    return v[0] / magnitude, v[1] / magnitude
