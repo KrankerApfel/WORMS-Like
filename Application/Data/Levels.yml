@@ -2,7 +2,7 @@
 Level_1:
   background : !!str 'Graphics/Backgrounds/BKG_theme_1.png'
   terrain : !!str 'Graphics/Spritesheets/ground_lvl_1.bmp'
-  wind_velocity : !!python/tuple [0,0]
+  wind_velocity : !!python/tuple [5,10]
   music : !!str 'path/to/music.ogg'
   ambiant : !!str 'path/to/sonor_ambiant.wav'
 

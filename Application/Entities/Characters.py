@@ -86,30 +86,27 @@ class Player:
         return self._current_worms
 
     def shooting_logic(self, keys):
-        if self.can_shoot:  # if in game state to shoot
-            if self.can_shoot:  # if in game state to shoot
-                if keys[inputs["SHOOT"]] and self.end_shooting:  # if started pressing space
-                    self.is_shooting = True
-                    self.start_shooting_time = pg.time.get_ticks()
-                    self.end_shooting = False
+        if self.can_shoot and self.weapon is not None:  # if in game state to shoot
+            if keys[inputs["SHOOT"]] and self.end_shooting:  # if started pressing space
+                self.is_shooting = True
+                self.start_shooting_time = pg.time.get_ticks()
+                self.end_shooting = False
 
             if not keys[inputs["SHOOT"]] and self.is_shooting:  # if the space key is not pressed and was pressed before
-                if self.weapon is not None:
-                    self.shooting_time = pg.time.get_ticks()
-                    self.can_shoot = False
-                    print("start shooting")
-                    self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
-                    self.start_shooting_time = 0
-
+                #self.weapon.ballistic.rect.center = self._current_worms.rect.center
+                self.shooting_time = pg.time.get_ticks()
+                self.can_shoot = False
+                self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
+                self.start_shooting_time = 0
                 self.end_shooting = True
                 self.is_shooting = False
 
             if keys[inputs["SHOOT"]] and self.start_shooting_time != 0 and (
-                    pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2 and self.weapon is Frag:  # if holding space and its been more than 2 seconds shoot
+                    pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
                 if self.weapon is not None:
+                    #self.weapon.ballistic.rect.center = self._current_worms.rect.center
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
-                    print("start shooting")
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                     self.start_shooting_time = 0
                 self.is_shooting = False
