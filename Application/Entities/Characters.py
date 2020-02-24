@@ -93,7 +93,7 @@ class Player:
                 self.end_shooting = False
 
             if not keys[inputs["SHOOT"]] and self.is_shooting:  # if the space key is not pressed and was pressed before
-                #self.weapon.ballistic.rect.center = self._current_worms.rect.center
+                self.weapon.ballistic.pos_initial = self._current_worms.rect.center
                 self.shooting_time = pg.time.get_ticks()
                 self.can_shoot = False
                 self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
@@ -104,7 +104,7 @@ class Player:
             if keys[inputs["SHOOT"]] and self.start_shooting_time != 0 and (
                     pg.time.get_ticks() - self.start_shooting_time) / 1000 > 2:  # if holding space and its been more than 2 seconds shoot
                 if self.weapon is not None:
-                    #self.weapon.ballistic.rect.center = self._current_worms.rect.center
+                    self.weapon.ballistic.pos_initial = self._current_worms.rect.center
                     self.shooting_time = pg.time.get_ticks()
                     self.can_shoot = False
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)

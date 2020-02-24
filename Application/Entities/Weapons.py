@@ -1,6 +1,6 @@
 import pygame as pg
 import os
-from yaml import load, SafeLoader
+from yaml import load, SafeLoader, Loader
 from Application.Core.Utilities import path_asset, Spritesheet, get_mask_collision_normal
 from Application.Environnement.Terrain import Ground
 from math import cos, sin, pi
@@ -10,10 +10,8 @@ inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'
     "Inputs"]
 physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Physic"]
-# wind = load(open(os.path.join("Application", "Data", "Levels.yml"), 'r'), Loader=SafeLoader)[
- # "Level_1"]
-wind = (200, 0)
-
+wind = load(open(os.path.join("Application", "Data", "Levels.yml"), 'r'), Loader=Loader)[
+     "Level_1"]["wind_velocity"]
 
 class Ballistic(pg.sprite.Sprite):
 
