@@ -226,7 +226,9 @@ class Worms(pg.sprite.Sprite):
         self.is_die = True
 
     def hurt(self, damage, direction):
+        print(self.life)
         self.life -= damage
+        print(self.life)
         self.velocity += pg.math.Vector2(direction[0], direction[1])
         if self.life <= 0:
             self.die()
