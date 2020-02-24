@@ -13,6 +13,7 @@ physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'
 wind = load(open(os.path.join("Application", "Data", "Levels.yml"), 'r'), Loader=Loader)[
      "Level_1"]["wind_velocity"]
 
+
 class Ballistic(pg.sprite.Sprite):
 
     def __init__(self, damage, spritesheet, position, drag, v0, mass):
@@ -33,7 +34,7 @@ class Ballistic(pg.sprite.Sprite):
         self.gravity = physic['GRAVITY'] * mass
         self.t = 0
         self.initial_t = 0
-        self.blast_radius = 10
+        self.blast_radius = 50
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []

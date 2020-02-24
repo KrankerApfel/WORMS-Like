@@ -12,6 +12,8 @@ param = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r')
     "Parameters"]
 inputs = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
     "Inputs"]
+settings = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Application"]
 
 
 class Player:
@@ -50,6 +52,7 @@ class Player:
         self.start_shooting_time = 0
         self.shooting_time = 0
         self._target = None
+        self.turn_end = False
 
     def events(self):
         keys = pg.key.get_pressed()
@@ -71,12 +74,14 @@ class Player:
             elif self.inventory[self.weapon_index].__eq__("Bazooka"):
                 self.weapon = None
                 self.weapon = Bazooka(self._current_worms.rect.center, 0, 5)
-            else :
+            else:
                 self.weapon = None
 
         self.shooting_logic(keys)
         if self.weapon:
             self.weapon.update_idle_position(self._current_worms.position, self.target.angle, self._current_worms.rect.center)
+            if self.weapon.ballistic.exploded:
+                self.turn_end = True
 
     def loose(self):
         return len(self.worms) == 0
@@ -153,6 +158,8 @@ class Worms(pg.sprite.Sprite):
         self.move()
         self.acceleration = pg.math.Vector2(0, 0)
         self.update_animation()
+        if self.rect.center[1] > settings['SCREEN_WIDTH']:
+            self.die()
 
     def update_animation(self):
         if not self.is_die:
@@ -226,9 +233,7 @@ class Worms(pg.sprite.Sprite):
         self.is_die = True
 
     def hurt(self, damage, direction):
-        print(self.life)
         self.life -= damage
-        print(self.life)
-        self.velocity += pg.math.Vector2(direction[0], direction[1])
+        # self.velocity += pg.math.Vector2(direction[0], direction[1])
         if self.life <= 0:
             self.die()
