@@ -50,8 +50,19 @@ class Match:
                 self.current_player.weapon.ballistic.collided_objects = \
                     pg.sprite.spritecollide(self.current_player.weapon.ballistic,
                                             self.all_sprites_group, False, pg.sprite.collide_mask)
+                blast_center = self.current_player.weapon.ballistic.rect.center
+                blast_radius = self.current_player.weapon.ballistic.blast_radius
+                if self.current_player.weapon.ballistic.exploded:
+                    for w in self.worms_group:
+                        if ((w.rect.center[0] - blast_center[0])*(w.rect.center[0] - blast_center[0])) + ((w.rect.center[1] - blast_center[1])*(w.rect.center[1] - blast_center[1])) < blast_radius*blast_radius:
+                            w.die()
+
+
+
         for w in self.worms_group:
             w.collided_objects = pg.sprite.spritecollide(w, self.all_sprites_group, False, pg.sprite.collide_mask)
+
+
 
         timeout = False
         if not timeout:  # or self.current_player.pa <= 0 or self.current_player.passed_turn()
@@ -62,6 +73,7 @@ class Match:
                 self.level["ground"].update_mask(200, (100, 200))  # destruction test TODO
                 self.current_player = self.players.pop(0)
                 self.players.append(self.current_player)
+                self.current_player.turn_end = False
                 print('turn to ' + self.current_player.name + ' team !')
                 self.turnTimer = 1200
                 timeout = True

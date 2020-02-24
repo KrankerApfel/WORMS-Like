@@ -13,6 +13,7 @@ physic = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'
 wind = load(open(os.path.join("Application", "Data", "Levels.yml"), 'r'), Loader=Loader)[
      "Level_1"]["wind_velocity"]
 
+
 class Ballistic(pg.sprite.Sprite):
 
     def __init__(self, damage, spritesheet, position, drag, v0, mass):
@@ -33,6 +34,7 @@ class Ballistic(pg.sprite.Sprite):
         self.gravity = physic['GRAVITY'] * mass
         self.t = 0
         self.initial_t = 0
+        self.blast_radius = 50
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
@@ -59,9 +61,9 @@ class Ballistic(pg.sprite.Sprite):
         if self.collided_objects:
             for o in self.collided_objects:
                 if isinstance(o, Ground) and not self.exploded:
-                    o.update_mask(50, self.rect.center)
-                elif not o.__eq__(self):
-                    o.hurt(50, get_mask_collision_normal(o, self))
+                    o.update_mask(self.blast_radius, self.rect.center)
+                elif not o.__eq__(self) or not isinstance(o, Ground):
+                    o.hurt(1000, get_mask_collision_normal(o, self))
             self.exploded = True
 
 
@@ -159,6 +161,8 @@ class Rocket(Ballistic):
             self.t = (pg.time.get_ticks() / 1000) - self.initial_t
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t + (wind[0] * self.t)
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t + (wind[1] * self.t)
+            if self.v0 > 0:
+                self.v0 = self.v0 - 0.02 * self.v0*self.t
             self.rect.center = (x, y)
             self.timer -= 1
             if self.timer <= 0:
