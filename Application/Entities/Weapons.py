@@ -33,6 +33,7 @@ class Ballistic(pg.sprite.Sprite):
         self.gravity = physic['GRAVITY'] * mass
         self.t = 0
         self.initial_t = 0
+        self.blast_radius = 10
         self.idle = True
         self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
@@ -59,9 +60,9 @@ class Ballistic(pg.sprite.Sprite):
         if self.collided_objects:
             for o in self.collided_objects:
                 if isinstance(o, Ground) and not self.exploded:
-                    o.update_mask(50, self.rect.center)
-                elif not o.__eq__(self):
-                    o.hurt(50, get_mask_collision_normal(o, self))
+                    o.update_mask(self.blast_radius, self.rect.center)
+                elif not o.__eq__(self) or not isinstance(o, Ground):
+                    o.hurt(1000, get_mask_collision_normal(o, self))
             self.exploded = True
 
 
