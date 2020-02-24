@@ -44,6 +44,10 @@ class Match:
         self.events()
         self.worms_group.update()
         self.target.update()
+        if self.current_player.weapon is not None:
+            if self.current_player.weapon.ballistic is not None:
+                if self.current_player.weapon.ballistic.exploded:
+                    self.current_player.can_move = True
         if self.current_player.weapon:
             self.current_player.weapon.update()
             if self.current_player.weapon.ballistic:

@@ -52,6 +52,7 @@ class Player:
         self._target = None
 
     def events(self):
+        self.current_worm.can_move = self.can_move
         keys = pg.key.get_pressed()
         if keys[inputs["MOVE_LEFT"]]:
             self._current_worms.set_direction(-1)
@@ -95,7 +96,6 @@ class Player:
             if not keys[inputs["SHOOT"]] and self.is_shooting:  # if the space key is not pressed and was pressed before
                 self.weapon.ballistic.pos_initial = self._current_worms.rect.center
                 self.shooting_time = pg.time.get_ticks()
-                self.can_shoot = False
                 self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                 self.start_shooting_time = 0
                 self.end_shooting = True
@@ -106,13 +106,13 @@ class Player:
                 if self.weapon is not None:
                     self.weapon.ballistic.pos_initial = self._current_worms.rect.center
                     self.shooting_time = pg.time.get_ticks()
-                    self.can_shoot = False
+                    self.can_move = False
                     self.weapon.shoot((pg.time.get_ticks() - self.start_shooting_time) / 1000, self.target.angle)
                     self.start_shooting_time = 0
                 self.is_shooting = False
                 self.end_shooting = True
-        if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5:  # if it has been 5 second, can start shooting again
-            self.can_shoot = True
+        #if (pg.time.get_ticks() - self.shooting_time) / 1000 > 5:  # if it has been 5 second, can start shooting again
+        #    self.can_shoot = True
 
 
 class Worms(pg.sprite.Sprite):
@@ -148,6 +148,7 @@ class Worms(pg.sprite.Sprite):
         self.die_timer = 100
         self._flip = False
         self.mask = pg.mask.from_surface(self.image)
+        self.can_move = True
 
     def update(self):
         self.move()
@@ -181,38 +182,38 @@ class Worms(pg.sprite.Sprite):
             self.acceleration.y = self.speed * y
 
     def move(self):
+        if self.can_move :
+            if len(self.collided_objects) <= 1:
+                self.acceleration.y = self.gravity
+                self._play_idling_animation = False
+                self._play_walking_animation = False
+                self._play_jump_animation = True
+                self._is_jumping = len(self.collided_objects) > 1
 
-        if len(self.collided_objects) <= 1:
-            self.acceleration.y = self.gravity
-            self._play_idling_animation = False
-            self._play_walking_animation = False
-            self._play_jump_animation = True
-            self._is_jumping = len(self.collided_objects) > 1
+            elif not self._is_jumping:
+                self.velocity.y = 0
+                self._play_jump_animation = False
+                for o in self.collided_objects:
+                    if not o == self:
 
-        elif not self._is_jumping:
-            self.velocity.y = 0
-            self._play_jump_animation = False
+                        p = get_mask_collision_normal(self, o)
+                        if p[0]:
+                            self.velocity.x = self.acceleration.x = 0
+
+            self.acceleration.x += self.velocity.x * self.drag
             for o in self.collided_objects:
-                if not o == self:
+                if isinstance(o, Ground):
 
                     p = get_mask_collision_normal(self, o)
-                    if p[0]:
-                        self.velocity.x = self.acceleration.x = 0
-
-        self.acceleration.x += self.velocity.x * self.drag
-        for o in self.collided_objects:
-            if isinstance(o, Ground):
-
-                p = get_mask_collision_normal(self, o)
-                if p[1] < 0:
-                    self.velocity.y = self.acceleration.y = 0
-                    self.position = (self.position[0], self.position[1] - self.rect.height / 2)
-                elif p[1] > 0:
-                    self.velocity.y = self.acceleration.y = self.gravity
-        # movement equations
-        self.velocity += self.acceleration
-        self.position += (self.velocity + 0.5 * self.acceleration)
-        self.rect.center = self.position
+                    if p[1] < 0:
+                        self.velocity.y = self.acceleration.y = 0
+                        self.position = (self.position[0], self.position[1] - self.rect.height / 2)
+                    elif p[1] > 0:
+                        self.velocity.y = self.acceleration.y = self.gravity
+            # movement equations
+            self.velocity += self.acceleration
+            self.position += (self.velocity + 0.5 * self.acceleration)
+            self.rect.center = self.position
 
     def jump(self):
 
