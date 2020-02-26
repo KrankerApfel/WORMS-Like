@@ -1,0 +1,35 @@
+---
+Application :
+  TITLE_GAME : !!str "Worms le jeu !!!"
+  SCREEN_WIDTH : !!int 1200
+  SCREEN_HEIGHT : !!int 600
+  ICON : !!str 'Graphics/Backgrounds/BKG_theme_1.png'
+  WINDOW_CAPTION : !!str  'WORMS Like - Groupe 2'
+  FPS : !!int 60
+  FONT_TITLE : !!str "Graphics\\Fonts\\Godzilla.ttf"
+  FONT_TEXT : !!str "Graphics\\Fonts\\Lemon-Juice.ttf"
+
+Parameters :
+  WORMS_LIFE : 100
+  MAX_SCORE : 1000
+
+Inputs :
+  CHANGE_WEAPONS : !!int 304
+  FRAG : !!int 49
+  BAZOOKA : !!int 50
+  SHOOT : !!int 32
+  JUMP : !!int 119
+  MOVE_LEFT : !!int 97
+  MOVE_RIGHT : !!int 100
+  AIM_UP : !!int 273
+  AIM_DOWN : !!int 274
+
+Physic:
+  GRAVITY : !!float 9.81
+  GROUND_BOUNCING_FACTOR : !!float 2
+  WORMS_DRAG : !!float -0.5
+  WORMS_SPEED : !!int 1
+  WORMS_JUMP_FORCE : !!int 10
+  WORMS_MASS : !!float 0.081
+  FRAG_MASS : !!float 50.96
+  ROCKET_MASS : !!float 50.96
