@@ -39,6 +39,8 @@ class Ballistic(pg.sprite.Sprite):
         self.exploded = False
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
         self.timer = 50
+        self.max_time_held = 2
+        self.max_speed = 500
 
     def shoot(self, time_held, angle):
         print("print from balistic shoot")
@@ -128,7 +130,7 @@ class Frag(Ballistic):
         self.t = 0
         self.initial_t = pg.time.get_ticks() / 1000  # initial_t
         self.angle = angle
-        self.v0 = (time_held / 2 * 500)  # v0 = inital speed
+        self.v0 = (time_held / self.max_time_held * self.max_speed)  # v0 = inital speed
 
     def update_position(self):
         # V0 = (t/tmax) * vmaxspeed
@@ -148,6 +150,7 @@ class Rocket(Ballistic):
         Ballistic.__init__(self, 500, Spritesheet(path_asset("Graphics\\Spritesheets\\Bomb.png"),
                                                   (0, 0, 16, 16), 4, 15), position, drag, 500, physic["ROCKET_MASS"])
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
+        self.max_speed = 450
 
     def animate(self):
         self.image = self._spritesheet.animate()
@@ -158,7 +161,7 @@ class Rocket(Ballistic):
         self.t = 0
         self.initial_t = pg.time.get_ticks() / 1000  # initial_t
         self.angle = angle
-        self.v0 = (time_held / 2 * 500)  # v0 = inital speed
+        self.v0 = (time_held / self.max_time_held * self.max_speed)  # v0 = inital speed
         return
 
     def update_position(self):
@@ -167,7 +170,7 @@ class Rocket(Ballistic):
             x = self.pos_initial[0] + self.v0 * cos(self.angle) * self.t + (wind[0] * self.t)
             y = self.pos_initial[1] + self.gravity * 0.5 * pow(self.t, 2) + self.v0 * sin(self.angle) * self.t + (wind[1] * self.t)
             if self.v0 > 0:
-                self.v0 = self.v0 - 0.02 * self.v0*self.t
+                self.v0 = self.v0 - 0.02 * self.v0*self.t   
             self.rect.center = (x, y)
             self.timer -= 1
             if self.timer <= 0:
@@ -180,9 +183,6 @@ class Bazooka(Weapon):
         Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
                                           (0, 0, 16, 16), 4, 15), position)
         self._ballistic = Rocket(position, 0, 5)
-
-
-
 
 
 class Target(pg.sprite.Sprite):
