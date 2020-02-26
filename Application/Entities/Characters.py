@@ -66,16 +66,12 @@ class Player:
         self._current_worms._play_idling_animation = not (keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]])
         self._current_worms._play_walking_animation = keys[inputs["MOVE_LEFT"]] or keys[inputs["MOVE_RIGHT"]]
 
-        if keys[inputs["CHANGE_WEAPONS"]]:
-            self.weapon_index = (self.weapon_index+1)%len(self.inventory)
-            if self.inventory[self.weapon_index].__eq__("Frag"):
-                self.weapon = None
-                self.weapon = HandWithFrag(self._current_worms.rect.center)
-            elif self.inventory[self.weapon_index].__eq__("Bazooka"):
-                self.weapon = None
-                self.weapon = Bazooka(self._current_worms.rect.center, 0, 5)
-            else:
-                self.weapon = None
+        if keys[inputs["FRAG"]]:
+            self.weapon = None
+            self.weapon = HandWithFrag(self.current_worms.rect.center)
+        if keys[inputs["BAZOOKA"]]:
+            self.weapon = None
+            self.weapon = Bazooka(self._current_worms.rect.center, 0, 5)
 
         self.shooting_logic(keys)
         if self.weapon:
