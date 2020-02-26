@@ -9,18 +9,6 @@ class Match:
     """
     This class represent a game part, namely a match between plaoyers.
     """
-    gravity = 9.81
-    windPower = 0
-    windDirection = 0
-    drag = 0
-    count = 0
-    is_shooting = False
-    start_shooting_time = 0
-    end_shooting = True
-    _can_shoot = True
-    _can_move = True
-    shooting_time = 0
-
     def __init__(self, player_number, worms_number, timer_delay, level_dict):
         self.level_data = level_dict
         self.level = dict()
@@ -28,7 +16,6 @@ class Match:
         self.level["ground"] = Ground(self.level_data['terrain'])
         self.players = [Player("player" + str(i), worms_number) for i in range(player_number)]
         self.turnTimer = timer_delay  # 3600
-        self.turn = 0
         self.current_player = self.players.pop(0)
         self.players.append(self.current_player)
         self.worms_group = pg.sprite.Group()
@@ -70,7 +57,7 @@ class Match:
             self.turnTimer -= 1
             if self.turnTimer < 0:
                 print('Timeout !')
-                self.level["ground"].update_mask(200, (100, 200))  # destruction test TODO
+                #self.level["ground"].update_mask(200, (100, 200))  # destruction test TODO
                 self.current_player = self.players.pop(0)
                 self.players.append(self.current_player)
                 self.current_player.turn_end = False
@@ -95,11 +82,3 @@ class Match:
             if p.loose():
                 return False
         return True
-
-    @property
-    def can_shoot(self):
-        return self._can_shoot
-
-    @can_shoot.setter
-    def can_shoot(self, value):
-        self._can_shoot = value

@@ -19,7 +19,6 @@ class Ground(pg.sprite.Sprite):
         self.image.set_colorkey((0, 0, 0))
         # set a rect may be  mandatory to check collision between pg.srite
         self.rect = self.image.get_rect()
-        self.rect.topleft = (0, 0)
         self.mask = pg.mask.from_surface(self.image)
 
     def update_mask(self, hole_radius, hole_position):

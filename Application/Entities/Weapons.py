@@ -19,14 +19,13 @@ class Ballistic(pg.sprite.Sprite):
     def __init__(self, damage, spritesheet, position, drag, v0, mass):
         pg.sprite.Sprite.__init__(self)
         self.image = spritesheet.frame_images[0]
+        self._spritesheet = spritesheet
         self.rect = self.image.get_rect()
         self.mask = pg.mask.from_surface(self.image)
         self.rect.center = (0, 0)
         self.pos_initial = position
-        self.collided_objects = []
         self.velocity = pg.math.Vector2(0, 0)
         self.acceleration = pg.math.Vector2(0, 0)
-        self.drag = drag
         self.v0 = v0
         self.angle = 0
         self.is_colliding = False
@@ -36,7 +35,6 @@ class Ballistic(pg.sprite.Sprite):
         self.initial_t = 0
         self.blast_radius = 50
         self.idle = True
-        self.mask = pg.mask.from_surface(self.image)
         self.collided_objects = []
         self.exploded = False
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
@@ -52,11 +50,14 @@ class Ballistic(pg.sprite.Sprite):
 
     def update(self):
         self.update_position()
+        self.animate()
 
     def update_position(self):
         return
-        # V0 = (t/tmax) * vmaxspeed
+        # V0 = (t/tmax) * vmaxspeed*
 
+    def animate(self):
+        return
     def explode(self):
         if self.collided_objects:
             for o in self.collided_objects:
@@ -148,6 +149,10 @@ class Rocket(Ballistic):
                                                   (0, 0, 16, 16), 4, 15), position, drag, 500, physic["ROCKET_MASS"])
         self.rect.center = (self.pos_initial[0], self.pos_initial[1])
 
+    def animate(self):
+        self.image = self._spritesheet.animate()
+
+
     def shoot(self, time_held, angle):
         self.idle = False
         self.t = 0
@@ -173,7 +178,7 @@ class Bazooka(Weapon):
 
     def __init__(self, position, drag, v0):
         Weapon.__init__(self, Spritesheet(path_asset("Graphics\\Spritesheets\\Rocket_Launcher.png"),
-                                          (0, 0, 16, 16), 1, 15), position)
+                                          (0, 0, 16, 16), 4, 15), position)
         self._ballistic = Rocket(position, 0, 5)
 
 
@@ -188,8 +193,8 @@ class Target(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (0, 0)
         self.player_position = (0, 0)
-        self.x = 600
-        self.y = 400
+        self.x = -50000
+        self.y = -50000
         self.radius = 120
         self.angle = 0
         self.is_active = False

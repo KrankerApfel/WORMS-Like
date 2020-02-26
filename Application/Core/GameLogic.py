@@ -4,7 +4,10 @@ from Application.Core.Utilities import image_fade_in
 import os
 import random
 import pygame as pg
-from yaml import load, BaseLoader,SafeLoader
+from yaml import load, BaseLoader, SafeLoader
+
+App_config = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
+    "Application"]
 
 
 class Game:
@@ -16,27 +19,17 @@ class Game:
     def __init__(self):
         pg.init()
         pg.mixer.init()
-        self.App_config = load(open(os.path.join("Application", "Data", "Configuration.yml"), 'r'), Loader=SafeLoader)[
-            "Application"]
-        self.screen = pg.display.set_mode((self.App_config["SCREEN_WIDTH"], self.App_config["SCREEN_HEIGHT"]))
-        pg.display.set_icon(pg.image.load(path_asset(self.App_config["ICON"])))
-        pg.display.set_caption(self.App_config["TITLE_GAME"])
+        self.screen = pg.display.set_mode((App_config["SCREEN_WIDTH"], App_config["SCREEN_HEIGHT"]))
+        pg.display.set_icon(pg.image.load(path_asset(App_config["ICON"])))
+        pg.display.set_caption(App_config["TITLE_GAME"])
         self.clock = pg.time.Clock()
         self.running = True
         self.on_menu = True
         self.on_game = False
         self.on_game_over = False
         self.playing = False
-        self.menu = Menu((163, 195, 208),  self.App_config, self.screen, self)
+        self.menu = Menu((163, 195, 208), App_config, self.screen, self)
         self.match = None
-
-    def new(self):
-        """
-        Function to load game assets and init parameters before run it.
-        :return: void
-        """
-        self.run()
-        pass
 
     def run(self):
         """
@@ -45,19 +38,14 @@ class Game:
         """
         self.playing = True
         while self.playing:
-            self.clock.tick( self.App_config["FPS"])
+            self.clock.tick(App_config["FPS"])
             self.draw()
-            self.fixed_update()
             self.update()
             self.events()
 
     def update(self):
         if self.on_game:
             self.match.update()
-        pass
-
-    def fixed_update(self):
-        # physic update loop
         pass
 
     def events(self):

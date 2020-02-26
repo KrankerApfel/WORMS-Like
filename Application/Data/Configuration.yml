@@ -1,6 +1,6 @@
 ---
 Application :
-  TITLE_GAME : !!str "Worms Motherfucker's"
+  TITLE_GAME : !!str "Worms le jeu !!!"
   SCREEN_WIDTH : !!int 1200
   SCREEN_HEIGHT : !!int 600
   ICON : !!str 'Graphics/Backgrounds/BKG_theme_1.png'
