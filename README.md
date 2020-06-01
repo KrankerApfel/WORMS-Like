@@ -1,10 +1,6 @@
 #Worms-like in Python
 This project was made for our python and maths classes.  
 
-Team members :
-- T. RAKOTOMANAMPISON
-- L. DILER
-- A. PAVY
 ##Installation
 **prerequisites** 
 * Python 3.8
