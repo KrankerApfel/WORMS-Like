@@ -1,7 +1,7 @@
-#Worms-like in Python
+# Worms-like in Python
 This project was made for our python and maths classes.  
 
-##Installation
+## Installation
 **prerequisites** 
 * Python 3.8
 * PyGame 1.9.6
@@ -15,16 +15,16 @@ If you are using pip, type the following command :
 pip install pygame
 pip install PyYAML
 ````
-##User guide
+## User guide
 
-###Launch
+### Launch
 
 To launch the project, execute Main.py with your IDE or type the following command in the main directory :
 ````
 python ./main.py
 ````
 
-###Play
+### Play
 
 You can choose the number of players and worms per player by right/left clicking on menu buttons. For the moment, there
 a bug when you play with more than one worms per player.
